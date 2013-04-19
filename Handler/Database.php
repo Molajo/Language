@@ -1,6 +1,6 @@
 <?php
 /**
- * Language Service
+ * Database Handler for Language
  *
  * @package   Molajo
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
@@ -10,53 +10,17 @@ namespace Molajo\Language;
 
 defined('MOLAJO') or die;
 
+use Molajo\Language\Api\LanguageInterface;
+use Molajo\Language\Exception\LanguageException;
+
 /**
- * Language Services supporting translations for the User Interface
- *
- * Language strings automatically loaded in startup for language determined in this order (and installed):
- *  1. Instantiated value 2. Session 3. User 4. Browser 5. Application Configuration 6. en-GB
- *
- * To load a different language:
- *  $instantiate_the_class = new Language($language);
- *  Then, all interactions should be with $instantiate_the_class instance.
- *
- * To work with the automatically loaded language, use Services::Language(), as shown below.
- *
- * To retrieve the key value (ex. 'en-GB') for the language which is loaded:
- *      Services::Language()->get('language');
- *
- * To retrieve all language strings and translations for the loaded language:
- *      Services::Language()->get('strings');
- *
- * To retrieve a list of all languages installed in this application:
- *      Services::Language()->get('installed');
- *
- * To retrieve a registry attribute value (id, name, rtl, local, first_day) for the loaded language:
- *      Services::Language()->get('name-of-attribute');
- *
- * To retrieve all registry attribute values as an array for the loaded language:
- *      Services::Language()->get('registry');
- *
- * To translate the string $xyz:
- *      Services::Language()->translate($xyz);
- *
- * To retrieve a list of language strings and translations matching a wildcard value:
- *      Services::Language()->translate($xyz, 1);
- *
- * To insert strings found in code but are not already in database
- *      If an administrator is logged on, the primary language services automatically insert untranslated strings
- *      To avoid doing so, override the LanguagePlugin and set insert_missing_strings to 0
- *      For instances you define, set the insert_missing_strings, as needed.
- *
- * To log strings found in code but are not already in database
- *      Set the Application configuration option profile_missing_strings to 1 and turn on profiling
  *
  * @author    Amy Stephen
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright 2013 Amy Stephen. All rights reserved.
  * @since     1.0
  */
-class Language
+class Database extends AbstractHandler implements LanguageInterface
 {
     /**
      * Language used for this instance
@@ -65,6 +29,14 @@ class Language
      * @since  1.0
      */
     protected $language;
+
+    /**
+     * Controller Class
+     *
+     * @var    string
+     * @since  1.0
+     */
+    protected $controller_class_namespace;
 
     /**
      * Default Language Instance if loaded language is missing translation and is not the default language
@@ -154,10 +126,10 @@ class Language
     /**
      * Get language property
      *
-     * @param string $key
-     * @param string $default
+     * @param   string  $key
+     * @param   string  $default
      *
-     * @return array|mixed|string
+     * @return  array|mixed|string
      * @throws  LanguageException
      * @since   1.0
      */
@@ -180,16 +152,16 @@ class Language
         }
 
         throw new LanguageException
-        ('Language Service: attempting to get value for unknown property: ' . $key);
+            ('Language Service: attempting to get value for unknown property: ' . $key);
     }
 
     /**
      * Set the value of the specified key
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param   string  $key
+     * @param   mixed   $value
      *
-     * @return mixed
+     * @return  mixed
      * @since   1.0
      * @throws  LanguageException
      */
@@ -211,16 +183,16 @@ class Language
         }
 
         throw new LanguageException
-        ('Language Service: attempting to get value for unknown property: ' . $key);
+            ('Language Service: attempting to get value for unknown property: ' . $key);
     }
 
     /**
      * Translate String in loaded language or create new instance to translate using fall back language
      *
-     * @param string $string
-     * @param int    $list
+     * @param   string $string
+     * @param   int    $list
      *
-     * @return array|string
+     * @return  array|string
      * @since   1.0
      */
     public function translate($string, $list = 0)
@@ -274,7 +246,7 @@ class Language
      *
      * @param   $string
      *
-     * @return void
+     * @return  void
      * @since   1.0
      */
     protected function insertUntranslatedString($string)
@@ -283,8 +255,8 @@ class Language
             return;
         }
 
-        $controllerClass = CONTROLLER_CLASS_NAMESPACE;
-        $controller      = new $controllerClass();
+        $controller_class_namespace = $this->controller_class_namespace;
+        $controller      = new $controller_class_namespace();
         $controller->getModelRegistry('System', 'Languagestrings', 1);
 
         $controller->set('check_view_level_access', 0, 'model_registry');
@@ -298,7 +270,7 @@ class Language
      *
      * @param   $string
      *
-     * @return void
+     * @return  void
      * @since   1.0
      */
     protected function logUntranslatedString($string)
@@ -309,7 +281,7 @@ class Language
 
         if (defined('PROFILER_ON') && PROFILER_ON === true) {
 
-            Services::Profiler()->set(
+            $this->profiler->set(
                 'Language Services: ' . $this->get('current_language', 'en-GB')
                     . ' Language is missing translation for string: ' . $string,
                 'Application'

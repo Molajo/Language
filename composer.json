@@ -1,7 +1,7 @@
 {
     "name":"molajo/Language",
     "type":"molajo-bundle",
-    "description":"Molajo Language: File and Directory Services supports various Languages using Adapters, PHP platform independent",
+    "description":"Molajo Language: Application Languages support using Adapters, PHP platform independent",
     "keywords":["Language", "Molajo", "PSR-0"],
     "homepage":"http://github.com/Molajo/Language",
     "license":"MIT",
@@ -10,10 +10,6 @@
             "name":"Amy Stephen",
             "email":"AmyStephen@gmail.com",
             "homepage":"http://AmyStephen.github.com"
-        },
-        {
-            "name":"Other Contributors",
-            "homepage":"http://github.com/Molajo/Language/contributors"
         }
     ],
     "require":{

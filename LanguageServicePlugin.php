@@ -211,8 +211,8 @@ class LanguageServicePlugin extends Injector implements InjectorInterface
     {
         $language = $this->service_instance->get('language');
 
-        $controllerclass = CONTROLLER_CLASS_NAMESPACE;
-        $controller      = new $controllerClass();
+        $controller_class_namespace = $this->controller_namespace;
+        $controller      = new $controller_class_namespace();
         $controller->getModelRegistry('System', 'Languagestrings', 1);
 
         $controller->set('check_view_level_access', 1, 'model_registry');
@@ -287,7 +287,7 @@ class LanguageServicePlugin extends Injector implements InjectorInterface
         $controller->set('model_offset', 0, 'model_registry');
         $controller->set('model_count', 999999, 'model_registry');
 
-        $results = $controller->getData(QUERY_OBJECT_LIST);
+        $results = $controller->getData('list');
 
         if (is_array($results)) {
         } else {
