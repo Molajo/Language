@@ -2,28 +2,29 @@
 /**
  * Database Handler for Language
  *
- * @package   Molajo
- * @license   http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright 2013 Amy Stephen. All rights reserved.
+ * @package    Molajo
+ * @license    http://www.opensource.org/licenses/mit-license.html MIT License
+ * @copyright  2013 Amy Stephen. All rights reserved.
  */
-namespace Molajo\Language;
+namespace Molajo\Language\Handler;
 
-defined('MOLAJO') or die;
-
-use Molajo\Language\Api\LanguageInterface;
-use Molajo\Language\Exception\LanguageException;
+use stdClass;
+use CommonApi\Language\LanguageInterface;
+use CommonApi\Language\DatabaseModelInterface;
+use Exception\Language\LanguageException;
 
 /**
+ * Database Handler for Language
  *
- * @author    Amy Stephen
- * @license   http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright 2013 Amy Stephen. All rights reserved.
- * @since     1.0
+ * @author     Amy Stephen
+ * @license    http://www.opensource.org/licenses/mit-license.html MIT License
+ * @copyright  2013 Amy Stephen. All rights reserved.
+ * @since      1.0
  */
 class Database extends AbstractHandler implements LanguageInterface
 {
     /**
-     * Language used for this instance
+     * Language
      *
      * @var    string
      * @since  1.0
@@ -31,44 +32,76 @@ class Database extends AbstractHandler implements LanguageInterface
     protected $language;
 
     /**
-     * Controller Class
+     * Extension ID
      *
      * @var    string
      * @since  1.0
      */
-    protected $controller_class_namespace;
+    protected $extension_id;
 
     /**
-     * Default Language Instance if loaded language is missing translation and is not the default language
+     * Extension Instance ID
+     *
+     * @var    int
+     * @since  1.0
+     */
+    protected $extension_instance_id;
+
+    /**
+     * Title
      *
      * @var    string
      * @since  1.0
      */
-    protected $default_language_instance;
+    protected $title;
 
     /**
-     * en-GB Language Instance if loaded language is missing translation and is not the en-GB language
+     * Tag
      *
      * @var    string
      * @since  1.0
      */
-    protected $en_gb_instance;
+    protected $tag;
 
     /**
-     * Language Registry for the language loaded in this instance
+     * Locale
      *
-     * @var    array
+     * @var    string
      * @since  1.0
      */
-    protected $registry = array();
+    protected $locale;
 
     /**
-     * Installed Languages includes tags, like en-GB, for all installed languages
+     * Rtl
      *
-     * @var    array
+     * @var    boolean
      * @since  1.0
      */
-    protected $installed = array();
+    protected $rtl;
+
+    /**
+     * Direction
+     *
+     * @var    boolean
+     * @since  1.0
+     */
+    protected $direction;
+
+    /**
+     * First Day
+     *
+     * @var    int
+     * @since  1.0
+     */
+    protected $first_day;
+
+    /**
+     * UTC Offset
+     *
+     * @var    string
+     * @since  1.0
+     */
+    protected $language_utc_offset;
 
     /**
      * Language Strings for the language loaded in this instance
@@ -76,23 +109,31 @@ class Database extends AbstractHandler implements LanguageInterface
      * @var    array
      * @since  1.0
      */
-    protected $strings = array();
+    protected $language_strings = array();
 
     /**
-     * Indicator of whether or not missing language strings should be profiled
+     * Model Instance - save untranslated strings
      *
-     * @var    bool
+     * @var    object  CommonApi\Language\DatabaseModelInterface
      * @since  1.0
      */
-    protected $profile_missing_strings;
+    protected $model;
 
     /**
-     * Indicator of whether or not missing language strings should be inserted into the database
+     * Default Language Instance
      *
-     * @var    bool
+     * @var    null|object  CommonApi\Language\LanguageInterface
      * @since  1.0
      */
-    protected $insert_missing_strings;
+    protected $default_language;
+
+    /**
+     * Final Fallback en-GB Language Instance
+     *
+     * @var    null|object  CommonApi\Language\LanguageInterface
+     * @since  1.0
+     */
+    protected $en_gb_instance;
 
     /**
      * List of Properties
@@ -101,193 +142,197 @@ class Database extends AbstractHandler implements LanguageInterface
      * @since  1.0
      */
     protected $property_array = array(
-        'registry',
-        'installed',
         'language',
-        'strings',
-        'profile_missing_strings',
-        'insert_missing_strings'
+        'extension_id',
+        'extension_instance_id',
+        'title',
+        'tag',
+        'locale',
+        'rtl',
+        'direction',
+        'first_day',
+        'language_utc_offset',
+        'language_strings',
+        'model',
+        'default_language',
+        'en_gb_instance'
     );
 
     /**
-     * class constructor
+     * constructor
      *
-     * @param string $language
+     * @param string                 $language
+     * @param                        $extension_id
+     * @param                        $extension_instance_id
+     * @param                        $title
+     * @param                        $tag
+     * @param                        $locale
+     * @param                        $rtl
+     * @param                        $direction
+     * @param                        $first_day
+     * @param                        $language_utc_offset
+     * @param DatabaseModelInterface $model
+     * @param LanguageInterface      $default_language
+     * @param LanguageInterface      $en_gb_instance
      *
-     * @since   1.0
+     * @since  1.0
      */
-    public function __construct($language = '')
-    {
-        $this->language = $language;
-
-        return;
+    public function __construct(
+        $language = 'en-GB',
+        $extension_id,
+        $extension_instance_id,
+        $title,
+        $tag,
+        $locale,
+        $rtl,
+        $direction,
+        $first_day,
+        $language_utc_offset,
+        DatabaseModelInterface $model,
+        LanguageInterface $default_language = null,
+        LanguageInterface $en_gb_instance = null
+    ) {
+        $this->language              = $language;
+        $this->extension_id          = $extension_id;
+        $this->extension_instance_id = $extension_instance_id;
+        $this->title                 = $title;
+        $this->tag                   = $tag;
+        $this->locale                = $locale;
+        $this->rtl                   = $rtl;
+        $this->direction             = $direction;
+        $this->first_day             = $first_day;
+        $this->language_utc_offset   = $language_utc_offset;
+        $this->model                 = $model;
+        $this->default_language      = $default_language;
+        $this->en_gb_instance        = $en_gb_instance;
+        $this->language_strings      = $this->model->getLanguageStrings($this->language);
     }
 
     /**
-     * Get language property
+     * Get Language Properties
      *
-     * @param   string  $key
-     * @param   string  $default
+     * Specify null for key to have all language properties for current language
+     * returned aas an object
      *
-     * @return  array|mixed|string
-     * @throws  LanguageException
+     * @param   null|string $key
+     * @param   null|string $default
+     *
+     * @return  int  $this
      * @since   1.0
+     * @throws  \Exception\Language\LanguageException;
      */
-    public function get($key, $default = '')
+    public function get($key = null, $default = null)
     {
+        if ($key === null) {
+            $temp                        = new stdClass();
+            $temp->extension_id          = $this->extension_id;
+            $temp->extension_instance_id = $this->extension_instance_id;
+            $temp->title                 = $this->title;
+            $temp->tag                   = $this->tag;
+            $temp->locale                = $this->locale;
+            $temp->rtl                   = $this->rtl;
+            $temp->direction             = $this->direction;
+            $temp->first_day             = $this->first_day;
+            $temp->language_utc_offset   = $this->language_utc_offset;
+
+            return $temp;
+        }
+
         $key = strtolower($key);
 
         if (in_array($key, $this->property_array)) {
-
-            if (isset($this->$key)) {
-            } else {
-                $this->$key = $default;
-            }
-
-            return $this->$key;
-        }
-
-        if (isset($this->registry->$key)) {
-            return $this->registry->$key;
-        }
-
-        throw new LanguageException
+        } else {
+            throw new LanguageException
             ('Language Service: attempting to get value for unknown property: ' . $key);
+        }
+
+        if ($this->$key === null) {
+            $this->$key = $default;
+        }
+
+        return $this->$key;
     }
 
     /**
-     * Set the value of the specified key
+     * Translate String
      *
-     * @param   string  $key
-     * @param   mixed   $value
+     *  - Current language
+     *  - Default language
+     *  - Final fallback en-GB
+     *  - Store as untranslated string
      *
-     * @return  mixed
+     * @param   $string
+     *
+     * @return  string
      * @since   1.0
-     * @throws  LanguageException
+     * @throws  \Exception\Language\LanguageException
      */
-    public function set($key, $value = null)
+    public function translate($string)
     {
-        $key = strtolower($key);
+        if (is_array($string)) {
 
-        if (in_array($key, $this->property_array)) {
-
-            $this->$key = $value;
-
-            return $this->$key;
-        }
-
-        if (isset($this->registry->$key)) {
-            $this->registry->$key = $value;
-
-            return $this->registry->$key;
-        }
-
-        throw new LanguageException
-            ('Language Service: attempting to get value for unknown property: ' . $key);
-    }
-
-    /**
-     * Translate String in loaded language or create new instance to translate using fall back language
-     *
-     * @param   string $string
-     * @param   int    $list
-     *
-     * @return  array|string
-     * @since   1.0
-     */
-    public function translate($string, $list = 0)
-    {
-        $string = strtolower(trim($string));
-
-        if ((int) $list == 1) {
             $found = array();
 
-            $keys = array_keys($this->strings);
-            foreach ($keys as $key) {
-                if (strpos(strtolower($key), $string) === false) {
-                } else {
-                    $found[$key] = $this->strings[$key];
-                }
+            foreach ($string as $item) {
+                $found[$item] = $this->translateSearch($string);
             }
 
             return $found;
         }
 
-        if (isset($this->strings->$string)) {
-            return $this->strings->$string;
+        return $this->translateSearch($string);
+    }
+
+    /**
+     * Search for Translation
+     *
+     * @param   $string
+     *
+     * @return  string
+     * @since   1.0
+     * @throws  \Exception\Language\LanguageException
+     */
+    protected function translateSearch($string)
+    {
+        if (isset($this->language_strings[$string])) {
+            return $this->language_strings[$string];
         }
 
-        $this->logUntranslatedString($string);
-
-        if ($this->language == $this->get('default_language')) {
-            if ($this->language == 'en-GB') {
-                return $string;
-
+        if (is_object($this->default_language)) {
+            $result = $this->default_language->translate($string);
+            if ($result == $string) {
             } else {
-                $this->en_gb_instance = new Language($this->get('en-GB'));
-                $translated_string    = $this->en_gb_instance->translate($string);
+                return $string;
             }
-
-        } else {
-            $this->default_language_instance = new Language($this->get('default_language'));
-            $translated_string               = $this->default_language_instance->translate($string);
         }
 
-        if ($translated_string == false) {
-        } else {
-            return $translated_string;
+        if (is_object($this->en_gb_instance)) {
+            $result = $this->en_gb_instance->translate($string);
+            if ($result == $string) {
+            } else {
+                return $string;
+            }
         }
+
+        $this->setUntranslatedString($string);
 
         return $string;
     }
 
     /**
-     * Language strings found within the code but not translated can be saved to the database
+     * Store Untranslated Language Strings
      *
      * @param   $string
      *
-     * @return  void
+     * @return  $this
      * @since   1.0
      */
-    protected function insertUntranslatedString($string)
+    public function setUntranslatedString($string)
     {
-        if ((int) $this->get('insert_missing_strings', 0) === 0) {
-            return;
-        }
+        return 'Untranslated string : ' . $string . ' <br />';
 
-        $controller_class_namespace = $this->controller_class_namespace;
-        $controller      = new $controller_class_namespace();
-        $controller->getModelRegistry('System', 'Languagestrings', 1);
+        $this->model->setUntranslatedString($string);
 
-        $controller->set('check_view_level_access', 0, 'model_registry');
-        $controller->model->insertLanguageString($string);
-
-        return;
-    }
-
-    /**
-     * Language strings found within the code but not translated can be logged
-     *
-     * @param   $string
-     *
-     * @return  void
-     * @since   1.0
-     */
-    protected function logUntranslatedString($string)
-    {
-        if ((int) $this->get('profile_missing_strings', 0) === 0) {
-            return;
-        }
-
-        if (defined('PROFILER_ON') && PROFILER_ON === true) {
-
-            $this->profiler->set(
-                'Language Services: ' . $this->get('current_language', 'en-GB')
-                    . ' Language is missing translation for string: ' . $string,
-                'Application'
-            );
-        }
-
-        return;
+        return $this;
     }
 }

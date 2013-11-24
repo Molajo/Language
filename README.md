@@ -1,5 +1,3 @@
-**NOT COMPLETE**
-
 =======
 Language Package
 =======
@@ -37,7 +35,7 @@ To instantiate the Language Class:
 
 Once instantiated, all calls to the class can be made using the $language instance.
 
-## Get Language Properties ##
+## Language Properties ##
 
 To retrieve the key value (ex. 'en-GB') for the language which is loaded:
  ```php
@@ -80,7 +78,7 @@ To retrieve a list of language strings and translations matching a wildcard valu
     $language->translate($xyz, 1);
  ```
 
-### Identify Untranslated Strings ###
+## Identify Untranslated Strings ##
 
 To insert strings found in code but are not already in database:
 
@@ -88,6 +86,6 @@ To insert strings found in code but are not already in database:
 - To avoid doing so, override the `LanguagePlugin` and set `insert_missing_strings` to `0`
 - For instances you define, set the `insert_missing_strings`, as needed.
 
-To log strings found in code but are not already in database:
+To log strings found in code, but are not already in database:
 
-- Set the Application configuration option 1profile_missing_strings1 to 1 and turn on profiling
+- Set the Application configuration option `profile_missing_strings` to `1` and turn on `profiling`

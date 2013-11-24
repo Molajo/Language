@@ -1,34 +1,29 @@
 {
-    "name":"molajo/Language",
-    "type":"molajo-bundle",
-    "description":"Molajo Language: Application Languages support using Adapters, PHP platform independent",
-    "keywords":["Language", "Molajo", "PSR-0"],
-    "homepage":"http://github.com/Molajo/Language",
-    "license":"MIT",
-    "authors":[
+    "name": "molajo/language",
+    "type": "molajo-bundle",
+    "description": "Molajo Language Services for PHP Applications",
+    "keywords": ["Language", "CommonApi", "Molajo"],
+    "homepage": "http://github.com/Molajo/Language",
+    "license": "MIT",
+    "authors": [
         {
-            "name":"Amy Stephen",
-            "email":"AmyStephen@gmail.com",
-            "homepage":"http://AmyStephen.github.com"
+            "name": "Amy Stephen",
+            "email": "AmyStephen@gmail.com",
+            "homepage": "http://AmyStephen.github.io"
         }
     ],
-    "require":{
-        "php":">=5.3.3"
+    "require": {
+        "php": ">=5.3.10",
+        "commonapi/filesystem": "dev-master"
     },
 
-    "support":{
-        "email":"hello@molajo.org",
-        "irc":"irc://irc.freenode.org/molajo"
+    "support": {
+        "event": "hello@molajo.org",
+        "irc": "irc://irc.freenode.org/molajo"
     },
-    "autoload":{
-        "psr-0":{
-            "Molajo\\Language":"./"
-        }
-    },
-    "minimum-stability":"dev",
-    "extra":{
-        "branch-alias":{
-            "dev-master":"1.0.x-dev"
+    "autoload": {
+        "psr-4": {
+            "Molajo\\Language": "./"
         }
     }
 }
