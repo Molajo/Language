@@ -51,11 +51,11 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSet()
     {
-        $this->languageInstance->set('to', 'AmyStephen@gmail.com,Fname Lname');
-        $this->languageInstance->set('from', 'AmyStephen@gmail.com,Fname Lname');
-        $this->languageInstance->set('reply_to', 'AmyStephen@gmail.com,FName LName');
-        $this->languageInstance->set('cc', 'AmyStephen@gmail.com,FName LName');
-        $this->languageInstance->set('bcc', 'AmyStephen@gmail.com,FName LName');
+        $this->languageInstance->set('to', 'AmyStephen@Molajo.org,Fname Lname');
+        $this->languageInstance->set('from', 'AmyStephen@Molajo.org,Fname Lname');
+        $this->languageInstance->set('reply_to', 'AmyStephen@Molajo.org,FName LName');
+        $this->languageInstance->set('cc', 'AmyStephen@Molajo.org,FName LName');
+        $this->languageInstance->set('bcc', 'AmyStephen@Molajo.org,FName LName');
         $this->languageInstance->set('subject', 'Welcome to our Site');
         $this->languageInstance->set('body', '<h2>Stuff goes here</h2>');
         $this->languageInstance->set('mailer_html_or_text', 'html');
