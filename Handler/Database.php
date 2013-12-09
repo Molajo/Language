@@ -265,7 +265,6 @@ class Database extends AbstractHandler implements LanguageInterface
      *
      * @return  string
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function translate($string)
     {

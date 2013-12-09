@@ -288,7 +288,6 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  array
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function getLanguageStrings($language = 'en-GB')
     {
@@ -334,7 +333,6 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  bool
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function setUntranslatedString($string)
     {
