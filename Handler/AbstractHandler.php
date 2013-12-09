@@ -9,7 +9,7 @@
 namespace Molajo\Language\Handler;
 
 use CommonApi\Language\LanguageInterface;
-use Exception\Language\LanguageException;
+use CommonApi\Exception\RuntimeException;
 
 /**
  * Abstract Language Handler
@@ -32,7 +32,6 @@ abstract class AbstractHandler implements LanguageInterface
      *
      * @return  int  $this
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException;
      */
     public function get($key = null, $default = null)
     {
@@ -51,7 +50,6 @@ abstract class AbstractHandler implements LanguageInterface
      *
      * @return  string
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
      */
     public function translate($string)
     {

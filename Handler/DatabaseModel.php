@@ -13,7 +13,7 @@ use Exception;
 use CommonApi\Database\DatabaseInterface;
 use CommonApi\Language\DatabaseModelInterface;
 use CommonApi\Model\FieldhandlerInterface;
-use Exception\Language\LanguageException;
+use CommonApi\Exception\RuntimeException;
 
 /**
  * Database Model
@@ -147,13 +147,13 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  mixed
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function get($key, $default = null)
     {
         if (in_array($key, $this->property_array)) {
         } else {
-            throw new LanguageException
+            throw new RuntimeException
             ('Language Database: Get Key not known: ' . $key);
         }
 
@@ -171,7 +171,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  $this
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function setInstalledLanguages()
     {
@@ -252,7 +252,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  $this
      * @since   1.0
-     * @throws \Exception\Language\LanguageException
+     * @throws \CommonApi\Exception\RuntimeException
      */
     protected function filter($key, $value = null, $type, $filter_options = array())
     {
@@ -274,7 +274,7 @@ class DatabaseModel implements DatabaseModelInterface
         try {
             $value = $this->fieldhandler->filter($key, $value, $filter, $filter_options);
         } catch (Exception $e) {
-            throw new LanguageException
+            throw new RuntimeException
             ('Request: Filter class Failed for Key: ' . $key . ' Filter: ' . $filter . ' ' . $e->getMessage());
         }
 
@@ -288,7 +288,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  array
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function getLanguageStrings($language = 'en-GB')
     {
@@ -315,7 +315,7 @@ class DatabaseModel implements DatabaseModelInterface
         $data = $this->database->loadObjectList();
 
         if (count($data) === 0) {
-            throw new LanguageException
+            throw new RuntimeException
             ('Language Services: No Language strings for Language.');
         }
 
@@ -334,7 +334,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  bool
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function setUntranslatedString($string)
     {

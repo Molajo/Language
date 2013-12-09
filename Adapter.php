@@ -8,7 +8,7 @@
  */
 namespace Molajo\Language;
 
-use Exception\Language\AdapterException;
+use CommonApi\Exception\RuntimeException;
 use CommonApi\Language\LanguageInterface;
 
 /**
@@ -63,7 +63,6 @@ class Adapter implements LanguageInterface
      *
      * @return  int
      * @since   1.0
-     * @throws  \Exception\Language\AdapterException
      */
     public function get($key = null, $default = null)
     {
@@ -82,7 +81,6 @@ class Adapter implements LanguageInterface
      *
      * @return  string
      * @since   1.0
-     * @throws  \Exception\Language\AdapterException
      */
     public function translate($string)
     {
@@ -96,7 +94,6 @@ class Adapter implements LanguageInterface
      *
      * @return  $this
      * @since   1.0
-     * @throws  \Exception\Language\AdapterException
      */
     public function setUntranslatedString($string)
     {

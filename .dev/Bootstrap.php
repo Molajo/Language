@@ -1,37 +1,37 @@
 <?php
 /**
- * Language
+ * Bootstrap for Testing
  *
  * @package    Molajo
  * @copyright  2013 Amy Stephen. All rights reserved.
- * @license    MIT
+ * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  */
+include_once __DIR__ . '/CreateClassMap.php';
 
-if (substr($_SERVER['DOCUMENT_ROOT'], - 1) == '/') {
-    define('ROOT_FOLDER', $_SERVER['DOCUMENT_ROOT']);
-} else {
-    define('ROOT_FOLDER', $_SERVER['DOCUMENT_ROOT'] . '/');
+if (! defined('PHP_VERSION_ID')) {
+    $version = explode('.', phpversion());
+    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
-$base = substr(__DIR__, 0, strlen(__DIR__) - 5);
-define('BASE_FOLDER', $base);
+$base     = substr(__DIR__, 0, strlen(__DIR__) - 5);
+$classmap = array();
 
-//include BASE_FOLDER . '/Tests/Testcase1/Data.php';
+$results  = createClassMap($base . '/Handler', 'Molajo\\Language\\Handler\\');
+$classmap = array_merge($classmap, $results);
+$results  = createClassMap($base . '/Service/Language', 'Molajo\\Service\\Language\\');
+$classmap = array_merge($classmap, $results);
+$results  = createClassMap($base . '/vendor/commonapi/language', 'CommonApi\\Language\\');
+$classmap = array_merge($classmap, $results);
+$results  = createClassMap($base . '/vendor/commonapi/exception', 'CommonApi\\Exception\\');
+$classmap = array_merge($classmap, $results);
 
-$classMap = array(
-    'Exception\\Language\\LanguageException'   => BASE_FOLDER . '/Exception/LanguageException.php',
-    'Exception\\Language\\ExceptionInterface'  => BASE_FOLDER . '/Exception/ExceptionInterface.php',
-    'Molajo\\Language\\CommonApi\\LanguageInterface' => BASE_FOLDER . '/Api/LanguageInterface.php',
-    'Molajo\\Language\\Type\\AbstractType'     => BASE_FOLDER . '/Type/AbstractType.php',
-    'Molajo\\Language\\Type\\PhpMailerType'    => BASE_FOLDER . '/Type/PhpMailerType.php',
-    'Molajo\\Language\\Adapter'                => BASE_FOLDER . '/Adapter.php',
-    'PhpMailer\\phpmailer'                     => '/Users/amystephen/Sites/Standard/Vendor/PhpMailer/phpmailer.php',
-);
+$classmap['Molajo\\Language\\Adapter']   = $base . '/Adapter.php';
+ksort($classmap);
 
 spl_autoload_register(
-    function ($class) use ($classMap) {
-        if (array_key_exists($class, $classMap)) {
-            require_once $classMap[$class];
+    function ($class) use ($classmap) {
+        if (array_key_exists($class, $classmap)) {
+            require_once $classmap[$class];
         }
     }
 );

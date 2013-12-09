@@ -11,7 +11,7 @@ namespace Molajo\Language\Handler;
 use stdClass;
 use CommonApi\Language\LanguageInterface;
 use CommonApi\Language\DatabaseModelInterface;
-use Exception\Language\LanguageException;
+use CommonApi\Exception\RuntimeException;
 
 /**
  * Database Handler for Language
@@ -219,7 +219,7 @@ class Database extends AbstractHandler implements LanguageInterface
      *
      * @return  int  $this
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException;
+     * @throws  \CommonApi\Exception\RuntimeException;
      */
     public function get($key = null, $default = null)
     {
@@ -242,7 +242,7 @@ class Database extends AbstractHandler implements LanguageInterface
 
         if (in_array($key, $this->property_array)) {
         } else {
-            throw new LanguageException
+            throw new RuntimeException
             ('Language Service: attempting to get value for unknown property: ' . $key);
         }
 
@@ -265,7 +265,7 @@ class Database extends AbstractHandler implements LanguageInterface
      *
      * @return  string
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function translate($string)
     {
@@ -290,7 +290,7 @@ class Database extends AbstractHandler implements LanguageInterface
      *
      * @return  string
      * @since   1.0
-     * @throws  \Exception\Language\LanguageException
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function translateSearch($string)
     {
