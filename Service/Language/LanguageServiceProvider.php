@@ -70,7 +70,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         $options                            = array();
         $this->dependencies                 = array();
         $this->dependencies['Runtimedata']  = $options;
-        $this->dependencies['Resources']    = $options;
+        $this->dependencies['Resource']    = $options;
         $this->dependencies['Database']     = $options;
         $this->dependencies['Fieldhandler'] = $options;
 
@@ -173,7 +173,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         $null_date      = $this->dependencies['Database']->getNullDate();
         $current_date   = $this->dependencies['Database']->getDate();
         $fieldhandler   = $this->dependencies['Fieldhandler'];
-        $model_registry = $this->dependencies['Resources']->get(
+        $model_registry = $this->dependencies['Resource']->get(
             'xml:///Molajo//Datasource//Languageservice.xml'
         );
 
@@ -253,7 +253,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
      * @return  $this
      * @since   1.0
      */
-    public function scheduleNextService()
+    public function scheduleServices()
     {
         $options = array();
 
@@ -266,14 +266,14 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
 //$css_options['mimetype']
 
         $resources                             = array();
-        $resources['Resourcescss']             = $css_options;
-        $resources['Resourcescssdeclarations'] = $css_options;
-        $resources['Resourcesjs']              = $options;
-        $resources['Resourcesjsdeclarations']  = $options;
+        $resources['Resourcecss']             = $css_options;
+        $resources['Resourcecssdeclarations'] = $css_options;
+        $resources['Resourcejs']              = $options;
+        $resources['Resourcejsdeclarations']  = $options;
 
         $options['resources_array'] = $resources;
 
-        $this->schedule_service['Resourcesquery'] = $options;
+        $this->schedule_service['Resourcequery'] = $options;
         $this->schedule_service['Date']           = array();
         $this->schedule_service['Url']            = array();
         $this->schedule_service['Image']          = array();
