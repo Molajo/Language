@@ -271,7 +271,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         $resources['Resourcejs']              = $options;
         $resources['Resourcejsdeclarations']  = $options;
 
-        $options['resources_array'] = $resources;
+        $options['resource_array'] = $resources;
 
         $this->schedule_service['Resourcequery'] = $options;
         $this->schedule_service['Date']           = array();
