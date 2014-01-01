@@ -70,9 +70,10 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         $options                            = array();
         $this->dependencies                 = array();
         $this->dependencies['Runtimedata']  = $options;
-        $this->dependencies['Resource']    = $options;
+        $this->dependencies['Resource']     = $options;
         $this->dependencies['Database']     = $options;
         $this->dependencies['Fieldhandler'] = $options;
+        $this->dependencies['User']         = $options;
 
         return $this->dependencies;
     }
@@ -124,7 +125,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
             = $this->dependencies['Runtimedata']->application->parameters->application_line_end;
 //$css_options['mimetype']
 
-        $resource                             = array();
+        $resource                            = array();
         $resource['Resourcecss']             = $css_options;
         $resource['Resourcecssdeclarations'] = $css_options;
         $resource['Resourcejs']              = $options;
@@ -133,14 +134,13 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         $options['resource_array'] = $resource;
 
         $this->schedule_service['Resourcequery'] = $options;
-        $this->schedule_service['Date']           = array();
-        $this->schedule_service['Url']            = array();
-        $this->schedule_service['Image']          = array();
-        $this->schedule_service['Text']           = array();
+        $this->schedule_service['Date']          = array();
+        $this->schedule_service['Url']           = array();
+        $this->schedule_service['Image']         = array();
+        $this->schedule_service['Text']          = array();
 
         return $this->schedule_service;
     }
-
 
     /**
      * Instantiate Database Handler for Language
