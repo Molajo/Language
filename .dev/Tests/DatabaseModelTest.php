@@ -4,7 +4,7 @@
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2013 Amy Stephen. All rights reserved.
+ * @copyright  2014 Amy Stephen. All rights reserved.
  */
 namespace Molajo\Language\Test;
 
@@ -13,7 +13,7 @@ namespace Molajo\Language\Test;
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2013 Amy Stephen. All rights reserved.
+ * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0
  */
 class LanguageTest extends \PHPUnit_Framework_TestCase
@@ -47,6 +47,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
 
         return $this;
     }
+
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.

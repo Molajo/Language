@@ -4,7 +4,7 @@
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2013 Amy Stephen. All rights reserved.
+ * @copyright  2014 Amy Stephen. All rights reserved.
  */
 namespace Molajo\Language\Handler;
 
@@ -20,7 +20,7 @@ use CommonApi\Exception\RuntimeException;
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2013 Amy Stephen. All rights reserved.
+ * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0
  */
 class DatabaseModel implements DatabaseModelInterface
@@ -263,6 +263,7 @@ class DatabaseModel implements DatabaseModelInterface
         } elseif (substr($type, strlen($type) - 3, 3) == '_id'
             || $key == 'id'
             || $type == 'integer'
+            || $key == 'status'
         ) {
             $filter = 'Int';
         } elseif ($type == 'char') {
@@ -306,7 +307,7 @@ class DatabaseModel implements DatabaseModelInterface
         );
         $query->where(
             $this->database->qn('language')
-            . ' <> ' . $this->database->q('en-GB')
+            . ' = ' . $this->database->q('en-GB')
         );
         $query->limit(0, 99999);
         $query->order('title');
