@@ -293,27 +293,29 @@ class Database extends AbstractHandler implements LanguageInterface
      */
     protected function translateSearch($string)
     {
-        if (isset($this->language_strings[$string])) {
-            return $this->language_strings[$string];
+        $key = strtolower($string);
+
+        if (isset($this->language_strings[$key])) {
+            return $this->language_strings[$key];
         }
 
         if (is_object($this->default_language)) {
-            $result = $this->default_language->translate($string);
-            if ($result == $string) {
+            $result = $this->default_language->translate($key);
+            if ($result == $key) {
             } else {
-                return $string;
+                return $result;
             }
         }
 
         if (is_object($this->en_gb_instance)) {
-            $result = $this->en_gb_instance->translate($string);
-            if ($result == $string) {
+            $result = $this->en_gb_instance->translate($key);
+            if ($result == $key) {
             } else {
-                return $string;
+                return $result;
             }
         }
 
-        $this->setUntranslatedString($string);
+        $this->setUntranslatedString($key);
 
         return $string;
     }
@@ -328,8 +330,6 @@ class Database extends AbstractHandler implements LanguageInterface
      */
     public function setUntranslatedString($string)
     {
-        return 'Untranslated string : ' . $string . ' <br />';
-
         $this->model->setUntranslatedString($string);
 
         return $this;

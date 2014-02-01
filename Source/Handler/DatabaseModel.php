@@ -243,46 +243,6 @@ class DatabaseModel implements DatabaseModelInterface
     }
 
     /**
-     * Filter Input
-     *
-     * @param  string      $key
-     * @param  null|string $value
-     * @param  string      $type
-     * @param  array       $filter_options
-     *
-     * @return  $this
-     * @since   1.0
-     * @throws \CommonApi\Exception\RuntimeException
-     */
-    protected function filter($key, $value = null, $type, $filter_options = array())
-    {
-        if ($type == 'text') {
-            $filter = 'Html';
-        } elseif ($type == 'char') {
-            $filter = 'string';
-        } elseif (substr($type, strlen($type) - 3, 3) == '_id'
-            || $key == 'id'
-            || $type == 'integer'
-            || $key == 'status'
-        ) {
-            $filter = 'Int';
-        } elseif ($type == 'char') {
-            $filter = 'String';
-        } else {
-            $filter = $type;
-        }
-
-        try {
-            $value = $this->fieldhandler->filter($key, $value, $filter, $filter_options);
-        } catch (Exception $e) {
-            throw new RuntimeException
-            ('Request: Filter class Failed for Key: ' . $key . ' Filter: ' . $filter . ' ' . $e->getMessage());
-        }
-
-        return $value;
-    }
-
-    /**
      * Get Primary Language Language Strings
      *
      * @param   string $language
@@ -321,7 +281,8 @@ class DatabaseModel implements DatabaseModelInterface
 
         $strings = array();
         foreach ($data as $item) {
-            $strings[$item->title] = $item->content_text;
+            $title           = strtolower($item->title);
+            $strings[$title] = $item->content_text;
         }
 
         return $strings;
@@ -332,131 +293,233 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @param   string $string
      *
-     * @return  bool
+     * @return  $this
      * @since   1.0
      */
     public function setUntranslatedString($string)
     {
-        $sql = "
-             SELECT id
-                    FROM `molajo_language_strings`
-                    WHERE language = 'string'
-                    AND title = "
-            . $this->database->q($string);
+        $language      = 'string';
+        $parent_id     = $this->exists($string, $language);
+        $now_datetime  = $this->database->getDate();
+        $null_datetime = $this->database->getNullDate();
 
-        $results = $this->database->execute($sql);
-
-        if ((int)$results == 0) {
-
-            $sql = "
-
-                INSERT INTO `#__language_strings`
-                    (`id`, `site_id`, `extension_instance_id`, `catalog_type_id`,
-                        `title`, `subtitle`, `path`, `alias`, `content_text`,
-                        `protected`, `featured`, `stickied`, `status`,
-                        `start_publishing_datetime`, `stop_publishing_datetime`,
-                        `version`, `version_of_id`, `status_prior_to_version`,
-                        `created_datetime`, `created_by`,
-                        `modified_datetime`, `modified_by`,
-                        `checked_out_datetime`, `checked_out_by`,
-                        `root`, `parent_id`, `lft`, `rgt`, `lvl`, `home`,
-                        `customfields`, `parameters`, `metadata`,
-                        `language`, `translation_of_id`, `ordering`)
-
-                VALUES (null, 0, 6250, 6250, "
-                . $this->database->q($string) . ",
-                '', 'languagestrings',
-                LOWER(REPLACE("
-                . $this->database->q($string) . ", ' ', '_')), '',
-                1, 0, 0, 1, '2013-09-13 12:00:00', '0000-00-00 00:00:00', 1, 0, 0,
-                '2013-09-13 12:00:00', 1, '2013-09-13 12:00:00', 1,
-                '2013-09-13 12:00:00', 0, 5, 0, 1, 0, 1, 0, '{}', '{}', '{}', 'string', 0, 0);";
-
-            $this->database->execute($sql);
+        if ((int)$parent_id == 0) {
+            $parent_id = $this->saveLanguageString($string, $language, 0, $now_datetime, $null_datetime);
         }
 
-        /** Add to English Language */
-        $en_GB = "SELECT DISTINCT id
-                    FROM `molajo_language_strings`
-                    WHERE language = 'string'
-                      AND title NOT IN (SELECT title
-                      FROM  `molajo_language_strings`
-                      WHERE language = 'en-gb')
-                        AND id <> 5";
-
-        $results = $this->database->execute($en_GB);
-
-        if ($results === false || count($results) === 0) {
-        } else {
-            foreach ($results as $row) {
-
-                if ($row->id == 5) {
-                } else {
-                    $sql = "
-
-                    INSERT INTO `#__language_strings`
-                        (`id`, `site_id`, `extension_instance_id`, `catalog_type_id`,
-                            `title`, `subtitle`, `path`, `alias`, `content_text`,
-                            `protected`, `featured`, `stickied`, `status`,
-                            `start_publishing_datetime`, `stop_publishing_datetime`,
-                            `version`, `version_of_id`, `status_prior_to_version`,
-                            `created_datetime`, `created_by`,
-                            `modified_datetime`, `modified_by`,
-                            `checked_out_datetime`, `checked_out_by`,
-                            `root`, `parent_id`, `lft`, `rgt`, `lvl`, `home`,
-                            `customfields`, `parameters`, `metadata`,
-                            `language`, `translation_of_id`, `ordering`)
-
-                    SELECT null as `id`, `site_id`, `extension_instance_id`, `catalog_type_id`,
-                            `title`, `subtitle`, 'languagestrings/en-gb', `alias`, `content_text`,
-                            `protected`, `featured`, `stickied`, `status`,
-                            `start_publishing_datetime`, `stop_publishing_datetime`,
-                            `version`, `version_of_id`, `status_prior_to_version`,
-                            `created_datetime`, `created_by`,
-                            `modified_datetime`, `modified_by`,
-                            `checked_out_datetime`, `checked_out_by`,
-                            `root`, id as `parent_id`, `lft`, `rgt`, `lvl`, `home`,
-                            `customfields`, `parameters`, `metadata`,
-                            'en-gb', `translation_of_id`, `ordering`
-                    FROM #__language_strings
-                    WHERE id = " . (int)$row->id;
-
-                    $this->database->execute($sql);
-                }
+        foreach ($this->installed_languages as $key => $row) {
+            $language = $row->tag;
+            $exists   = $this->exists($string, $language);
+            if ((int)$exists === 0) {
+                $this->saveLanguageString($string, $language, $parent_id, $now_datetime, $null_datetime);
             }
         }
 
-        /** Add to Catalog */
-        $catalog = "SELECT DISTINCT id
-                    FROM `molajo_language_strings`
-                    WHERE CONCAT(path, '/', alias) NOT IN (SELECT DISTINCT sef_request
-                      FROM  `molajo_catalog`
-                      WHERE catalog_type_id = " . (INT)CATALOG_TYPE_LANGUAGE_STRING . ")";
+        return $this;
+    }
 
-        $results = $this->database->execute($catalog);
+    /**
+     * Determine if the language string exists for the language
+     *
+     * @param   string $string
+     * @param   string $language
+     *
+     * @return  int
+     * @since   1.0
+     */
+    public function exists($string, $language)
+    {
+        $query = $this->database->getQueryObject();
 
-        if ($results === false || count($results) === 0) {
+        $query->select($this->database->qn('id'));
+        $query->from($this->database->qn('#__language_strings'));
+        $query->where($this->database->qn('language') . ' = ' . $this->database->q($language));
+        $query->where($this->database->qn('title') . ' = ' . $this->database->q($string));
+
+        try {
+            $result = $this->database->loadResult();
+
+            return (int)$result;
+
+        } catch (Exception $e) {
+            throw new RuntimeException
+            ('Language DatabaseModel: exists query failed for Key: ' . $string . $e->getMessage());
+        }
+    }
+
+    /**
+     * Retrieve the key for the base language string
+     *
+     * @param   string $language_string
+     * @param   string $language
+     * @param   int    $parent_id
+     * @param   string $now_datetime
+     * @param   string $null_datetime
+     *
+     * @return  int
+     * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
+     */
+    public function saveLanguageString($language_string, $language, $parent_id, $now_datetime, $null_datetime)
+    {
+        $alias = $this->filter('alias', $language_string, 'alias');
+
+        $path = 'languagestrings';
+        if ($language === 'string') {
         } else {
-            foreach ($results as $row) {
+            $path .= '/' . strtolower($language);
+        }
 
-                $sql = "
+        $site_id                   = 0;
+        $extension_instance_id     = 6250;
+        $catalog_type_id           = 6250;
+        $title                     = $this->database->q($language_string);
+        $subtitle                  = $this->database->q('');
+        $path                      = $this->database->q($path);
+        $alias                     = $this->database->q($alias);
+        $content_text              = $this->database->q($language_string);
+        $protected                 = 0;
+        $featured                  = 0;
+        $stickied                  = 0;
+        $status                    = 1;
+        $start_publishing_datetime = $this->database->q($now_datetime);
+        $stop_publishing_datetime  = $this->database->q($null_datetime);
+        $version                   = 1;
+        $version_of_id             = $this->database->q('null');
+        $status_prior_to_version   = $this->database->q('null');
+        $created_datetime          = $this->database->q($now_datetime);
+        $created_by                = 1;
+        $modified_datetime         = $this->database->q($null_datetime);
+        $modified_by               = $this->database->q($null_datetime);
+        $checked_out_datetime      = $this->database->q($null_datetime);
+        $checked_out_by            = $this->database->q('null');
+        $root                      = 0;
+        $parent_id                 = (int)$parent_id;
+        $lft                       = 0;
+        $rgt                       = 0;
+        $lvl                       = 1;
+        $home                      = 0;
+        $customfields              = $this->database->q('{}');
+        $parameters                = $this->database->q('{}');
+        $metadata                  = $this->database->q('{}');
+        $language                  = $this->database->q($language);
+        $translation_of_id         = 0;
+        $ordering                  = 0;
 
-                INSERT INTO `molajo_catalog`(`id`, `application_id`, `catalog_type_id`,
-                        `source_id`, `enabled`, `redirect_to_id`, `sef_request`, `page_type`,
-                        `extension_instance_id`, `view_group_id`, `primary_category_id`)
+        $sql = 'INSERT INTO `#__language_strings`
 
-                SELECT null as `id`, `b`.`id`, `a`.`catalog_type_id`,
+                (`site_id`, `extension_instance_id`, `catalog_type_id`,
+                    `title`, `subtitle`, `path`, `alias`, `content_text`,
+                    `protected`, `featured`, `stickied`, `status`,
+                    `start_publishing_datetime`, `stop_publishing_datetime`, `version`,
+                    `version_of_id`, `status_prior_to_version`, `created_datetime`,
+                    `created_by`, `modified_datetime`, `modified_by`,
+                    `checked_out_datetime`, `checked_out_by`, `root`, `parent_id`,
+                    `lft`, `rgt`, `lvl`, `home`,
+                    `customfields`, `parameters`, `metadata`, `language`,
+                    `translation_of_id`, `ordering`)
+
+                VALUES (' . $site_id . ', ' . $extension_instance_id . ', ' . $catalog_type_id
+            . ', ' . $title . ', ' . $subtitle . ', ' . $path . ', ' . $alias . ', ' . $content_text
+            . ', ' . $protected . ', ' . $featured . ', ' . $stickied . ', ' . $status
+            . ', ' . $start_publishing_datetime . ', ' . $stop_publishing_datetime . ', ' . $version
+            . ', ' . $version_of_id . ', ' . $status_prior_to_version . ', ' . $created_datetime
+            . ', ' . $created_by . ', ' . $modified_datetime . ', ' . $modified_by
+            . ', ' . $checked_out_datetime . ', ' . $checked_out_by . ', ' . $root . ', ' . $parent_id
+            . ', ' . $lft . ', ' . $rgt . ', ' . $lvl . ', ' . $home
+            . ', ' . $customfields . ', ' . $parameters . ', ' . $metadata . ', ' . $language
+            . ', ' . $translation_of_id . ', ' . $ordering . ')';
+
+        try {
+
+            $this->database->execute($sql);
+
+            $language_id = (int)$this->database->getInsertId();
+
+            $this->insertCatalogEntry($language_id);
+
+            return $language_id;
+
+        } catch (Exception $e) {
+            throw new RuntimeException
+            ('Language DatabaseModel: insert query failed for Language: ' . $language
+            . 'Language String: ' . $language_string . ' ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Retrieve the key for the base language string
+     *
+     * @param   int $language_id
+     *
+     * @return  $this
+     * @since   1.0
+     */
+    public function insertCatalogEntry($language_id)
+    {
+        $sql = "
+            INSERT INTO `molajo_catalog`(`application_id`, `catalog_type_id`, `source_id`,
+                `enabled`, `redirect_to_id`, `sef_request`, `page_type`, `extension_instance_id`,
+                `view_group_id`, `primary_category_id`)
+
+                SELECT `b`.`id`, `a`.`catalog_type_id`,
                     `a`.`id`, 1, 0, CONCAT(`a`.`path`, '/', `a`.`alias`),
                     'item', `a`.`extension_instance_id`, 1, 12
 
                 FROM `molajo_language_strings` as `a`,
                     `molajo_applications` as `b`
 
-                WHERE a.id = " . (int)$row->id;
+                WHERE a.id = " . (int)$language_id;
 
-                $this->database->execute($sql);
-            }
+        try {
+            $this->database->execute($sql);
+
+        } catch (Exception $e) {
+            throw new RuntimeException
+            ('Language DatabaseModel: insertCatalogEntry query failed for Language Key: '
+            . $language_id . $e->getMessage());
         }
-        return true;
+
+        return $this;
+    }
+
+    /**
+     * Filter Input
+     *
+     * @param  string      $key
+     * @param  null|string $value
+     * @param  string      $type
+     * @param  array       $filter_options
+     *
+     * @return  $this
+     * @since   1.0
+     * @throws \CommonApi\Exception\RuntimeException
+     */
+    protected function filter($key, $value = null, $type, $filter_options = array())
+    {
+        if ($type == 'text') {
+            $filter = 'Html';
+        } elseif ($type == 'char') {
+            $filter = 'string';
+        } elseif (substr($type, strlen($type) - 3, 3) == '_id'
+            || $key == 'id'
+            || $type == 'integer'
+            || $key == 'status'
+        ) {
+            $filter = 'Int';
+        } elseif ($type == 'char') {
+            $filter = 'String';
+        } else {
+            $filter = $type;
+        }
+
+        try {
+            $value = $this->fieldhandler->filter($key, $value, $filter, $filter_options);
+        } catch (Exception $e) {
+            throw new RuntimeException
+            ('Request: Filter class Failed for Key: ' . $key . ' Filter: ' . $filter . ' ' . $e->getMessage());
+        }
+
+        return $value;
     }
 }
