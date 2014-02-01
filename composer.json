@@ -16,14 +16,13 @@
         "php": ">=5.4",
         "commonapi/language": "dev-master"
     },
-
     "support": {
         "event": "hello@molajo.org",
         "irc": "irc://irc.freenode.org/molajo"
     },
     "autoload": {
         "psr-4": {
-            "Molajo\\Language": "./"
+            "Molajo\\Language\\": "Source/"
         }
     }
 }
