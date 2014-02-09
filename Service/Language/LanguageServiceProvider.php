@@ -108,41 +108,6 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
     }
 
     /**
-     * Schedule the Next Service
-     *
-     * @return  $this
-     * @since   1.0
-     */
-    public function scheduleServices()
-    {
-        $options = array();
-
-        $css_options['language_direction']
-            = $this->dependencies['Runtimedata']->application->parameters->language_direction;
-        $css_options['html5']
-            = $this->dependencies['Runtimedata']->application->parameters->application_html5;
-        $css_options['line_end']
-            = $this->dependencies['Runtimedata']->application->parameters->application_line_end;
-//$css_options['mimetype']
-
-        $resource                            = array();
-        $resource['Resourcecss']             = $css_options;
-        $resource['Resourcecssdeclarations'] = $css_options;
-        $resource['Resourcejs']              = $options;
-        $resource['Resourcejsdeclarations']  = $options;
-
-        $options['resource_array'] = $resource;
-
-        $this->schedule_service['Resourcequery'] = $options;
-        $this->schedule_service['Date']          = array();
-        $this->schedule_service['Url']           = array();
-        $this->schedule_service['Image']         = array();
-        $this->schedule_service['Text']          = array();
-
-        return $this->schedule_service;
-    }
-
-    /**
      * Instantiate Database Handler for Language
      *
      * @param   string $model
