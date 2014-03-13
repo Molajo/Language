@@ -243,7 +243,7 @@ class Database extends AbstractHandler implements LanguageInterface
         if (in_array($key, $this->property_array)) {
         } else {
             throw new RuntimeException
-            ('Language Service: attempting to get value for unknown property: ' . $key);
+            ('Language Class: attempting to get value for unknown property: ' . $key);
         }
 
         if ($this->$key === null) {

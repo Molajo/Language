@@ -18,7 +18,7 @@ $classmap = array();
 
 $results  = createClassMap($base . '/Source/Handler', 'Molajo\\Language\\Handler\\');
 $classmap = array_merge($classmap, $results);
-$results  = createClassMap($base . '/Service/Language', 'Molajo\\Service\\Language\\');
+$results  = createClassMap($base . '/Factories/Language', 'Molajo\\Factories\\Language\\');
 $classmap = array_merge($classmap, $results);
 $results  = createClassMap($base . '/vendor/commonapi/language', 'CommonApi\\Language\\');
 $classmap = array_merge($classmap, $results);

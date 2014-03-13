@@ -276,7 +276,7 @@ class DatabaseModel implements DatabaseModelInterface
 
         if (count($data) === 0) {
             throw new RuntimeException
-            ('Language Services: No Language strings for Language.');
+            ('Language Database: No Language strings for Language.');
         }
 
         $strings = array();

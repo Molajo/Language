@@ -1,27 +1,28 @@
 <?php
 /**
- * Language Service Provider
+ * Language Factory Method
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  */
-namespace Molajo\Service\Language;
+namespace Molajo\Factories\Language;
 
 use Exception;
-use Molajo\IoC\AbstractServiceProvider;
-use CommonApi\IoC\ServiceProviderInterface;
 use CommonApi\Exception\RuntimeException;
+use CommonApi\IoC\FactoryMethodInterface;
+use CommonApi\IoC\FactoryMethodBatchSchedulingInterface;
+use Molajo\IoC\FactoryBase;
 
 /**
- * Language Service Provider
+ * Language Factory Method
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0
  */
-class LanguageServiceProvider extends AbstractServiceProvider implements ServiceProviderInterface
+class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterface, FactoryMethodBatchSchedulingInterface
 {
     /**
      * Language List
@@ -48,15 +49,15 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
      */
     public function __construct(array $options = array())
     {
-        $options['service_name']             = basename(__DIR__);
+        $options['product_name']             = basename(__DIR__);
         $options['store_instance_indicator'] = true;
-        $options['service_namespace']        = 'Molajo\\Language\\Adapter';
+        $options['product_namespace']        = 'Molajo\\Language\\Adapter';
 
         parent::__construct($options);
     }
 
     /**
-     * Instantiate a new handler and inject it into the Adapter for the ServiceProviderInterface
+     * Instantiate a new handler and inject it into the Adapter for the FactoryMethodInterface
      * Retrieve a list of Interface dependencies and return the data ot the controller.
      *
      * @return  array
@@ -85,7 +86,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
      * @since   1.0
      * @throws  \CommonApi\Exception\RuntimeException;
      */
-    public function instantiateService()
+    public function instantiateClass()
     {
         $handler = $this->instantiateDatabaseHandler(
             $this->instantiateDatabaseModel(),
@@ -93,14 +94,14 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         );
 
         try {
-            $this->service_instance = new $this->service_namespace (
+            $this->product_result = new $this->product_namespace (
                 $handler,
                 $this->setLanguage()
             );
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('IoC Service Provider Instance Failed for ' . $this->service_namespace
+            ('IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
             . ' failed.' . $e->getMessage());
         }
 
@@ -152,7 +153,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('IoC Service Provider Instance Failed for ' . $this->service_namespace
+            ('IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
             . ' failed.' . $e->getMessage());
         }
     }
@@ -175,7 +176,7 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         $current_date   = $this->dependencies['Database']->getDate();
         $fieldhandler   = $this->dependencies['Fieldhandler'];
         $model_registry = $this->dependencies['Resource']->get(
-            'xml:///Molajo//Datasource//Languageservice.xml'
+            'xml:///Molajo//Model//Datasource//Languages.xml'
         );
 
         $class = 'Molajo\\Language\\Handler\\DatabaseModel';
@@ -193,7 +194,8 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('IoC Service Provider Instance Failed for ' . $class . ' in LanguageServiceProvider ' . $e->getMessage());
+            ('IoC Factory Method Adapter Instance Failed for ' . $class . ' in LanguageFactoryMethod ' . $e->getMessage(
+            ));
         }
 
         $this->installed_languages = $databasemodel->get('installed_languages');
@@ -245,6 +247,6 @@ class LanguageServiceProvider extends AbstractServiceProvider implements Service
         }
 
         throw new RuntimeException
-        ('Language Service Provider: No Language Defined.');
+        ('Language Factory Method: No Language Defined.');
     }
 }
