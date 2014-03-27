@@ -23,7 +23,7 @@
     "autoload": {
         "psr-4": {
             "Molajo\\Language\\": "Source/",
-            "Molajo\\Factories\\": "Factories/"
+            "Molajo\\Factories\\Language\\": "Factories/Language/"
         }
     },
 

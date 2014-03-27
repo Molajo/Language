@@ -1,25 +1,24 @@
 <?php
 /**
- * Abstract Language Handler
+ * Abstract Language Adapter
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  */
-namespace Molajo\Language\Handler;
+namespace Molajo\Language\Adapter;
 
 use CommonApi\Language\LanguageInterface;
-use CommonApi\Exception\RuntimeException;
 
 /**
- * Abstract Language Handler
+ * Abstract Language Adapter
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0
  */
-abstract class AbstractHandler implements LanguageInterface
+abstract class AbstractAdapter implements LanguageInterface
 {
     /**
      * Get Language Properties

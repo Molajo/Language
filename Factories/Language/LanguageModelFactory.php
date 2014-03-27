@@ -10,9 +10,9 @@ namespace Molajo\Factories\Language;
 
 use Exception;
 use CommonApi\Exception\RuntimeException;
-use CommonApi\IoC\FactoryMethodInterface;
-use CommonApi\IoC\FactoryMethodBatchSchedulingInterface;
-use Molajo\IoC\FactoryBase;
+use CommonApi\IoC\FactoryInterface;
+use CommonApi\IoC\FactoryBatchInterface;
+use Molajo\IoC\FactoryMethodBase;
 
 /**
  * Language Factory Method
@@ -22,7 +22,7 @@ use Molajo\IoC\FactoryBase;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0
  */
-class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterface, FactoryMethodBatchSchedulingInterface
+class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterface, FactoryBatchInterface
 {
     /**
      * Language List
@@ -51,14 +51,13 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
     {
         $options['product_name']             = basename(__DIR__);
         $options['store_instance_indicator'] = true;
-        $options['product_namespace']        = 'Molajo\\Language\\Adapter';
+        $options['product_namespace']        = 'Molajo\\Language\\Driver';
 
         parent::__construct($options);
     }
 
     /**
-     * Instantiate a new handler and inject it into the Adapter for the FactoryMethodInterface
-     * Retrieve a list of Interface dependencies and return the data ot the controller.
+     * Instantiate a new adapter and inject it into the Adapter for the FactoryInterface
      *
      * @return  array
      * @since   1.0
@@ -68,13 +67,13 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
     {
         $this->reflection = array();
 
-        $options                            = array();
-        $this->dependencies                 = array();
-        $this->dependencies['Runtimedata']  = $options;
-        $this->dependencies['Resource']     = $options;
-        $this->dependencies['Database']     = $options;
-        $this->dependencies['Fieldhandler'] = $options;
-        $this->dependencies['User']         = $options;
+        $options                           = array();
+        $this->dependencies                = array();
+        $this->dependencies['Runtimedata'] = $options;
+        $this->dependencies['Resource']    = $options;
+        $this->dependencies['Database']    = $options;
+        $this->dependencies['Query']       = $options;
+        $this->dependencies['User']        = $options;
 
         return $this->dependencies;
     }
@@ -88,16 +87,13 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
      */
     public function instantiateClass()
     {
-        $handler = $this->instantiateDatabaseHandler(
-            $this->instantiateDatabaseModel(),
-            $this->setLanguage()
-        );
+        $database = $this->instantiateDatabaseModel();
+        $language = $this->setLanguage();
+        $adapter  = $this->instantiateDatabaseAdapter($database, $language);
 
         try {
-            $this->product_result = new $this->product_namespace (
-                $handler,
-                $this->setLanguage()
-            );
+            $this->product_result = new $this->product_namespace ($adapter, $language);
+
         } catch (Exception $e) {
 
             throw new RuntimeException
@@ -109,7 +105,7 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
     }
 
     /**
-     * Instantiate Database Handler for Language
+     * Instantiate Database Adapter for Language
      *
      * @param   string $model
      * @param   string $language
@@ -118,7 +114,7 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
      * @since   1.0
      * @throws  \CommonApi\Exception\RuntimeException;
      */
-    public function instantiateDatabaseHandler($model, $language)
+    protected function instantiateDatabaseAdapter($model, $language)
     {
         $default_language      = null;
         $en_gb_instance        = null;
@@ -133,7 +129,7 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
         $language_utc_offset   = $this->installed_languages['en-GB']->language_utc_offset;
 
         try {
-            $class = 'Molajo\\Language\\Handler\\Database';
+            $class = 'Molajo\\Language\\Adapter\\Database';
 
             return new $class(
                 $language,
@@ -161,7 +157,7 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
     /**
      * Instantiate Language Model for capturing missing translations
      *
-     * @param   $handler
+     * @param   $adapter
      *
      * @return  object
      * @since   1.0
@@ -169,33 +165,30 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
      */
     protected function instantiateDatabaseModel()
     {
-        $application_id = $this->dependencies['Runtimedata']->application->id;
-        $database       = $this->dependencies['Database'];
-        $query          = $this->dependencies['Database']->getQueryObject();
-        $null_date      = $this->dependencies['Database']->getNullDate();
-        $current_date   = $this->dependencies['Database']->getDate();
-        $fieldhandler   = $this->dependencies['Fieldhandler'];
-        $model_registry = $this->dependencies['Resource']->get(
+        $public_view_group_id = 1;
+        $database             = $this->dependencies['Database'];
+        $null_date            = $this->dependencies['Query']->getNullDate();
+        $current_date         = $this->dependencies['Query']->getDate();
+        $model_registry       = $this->dependencies['Resource']->get(
             'xml:///Molajo//Model//Datasource//Languages.xml'
         );
 
-        $class = 'Molajo\\Language\\Handler\\DatabaseModel';
+        $class = 'Molajo\\Language\\Adapter\\DatabaseModel';
 
         try {
             $databasemodel = new $class(
-                $application_id,
+                $public_view_group_id,
                 $database,
-                $query,
+                $this->dependencies['Query'],
                 $null_date,
                 $current_date,
-                $fieldhandler,
                 $model_registry
             );
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('IoC Factory Method Adapter Instance Failed for ' . $class . ' in LanguageFactoryMethod ' . $e->getMessage(
-            ));
+            ('Language Model instantiateDatabaseModel method Failed for '
+            . $class . ' in LanguageFactoryMethod ' . $e->getMessage());
         }
 
         $this->installed_languages = $databasemodel->get('installed_languages');
@@ -219,7 +212,8 @@ class LanguageFactoryMethod extends FactoryBase implements FactoryMethodInterfac
             return $language;
         }
 
-        $language = $this->dependencies['User']->getUserData('language');
+        $language = $this->dependencies['User']->getUserData()->language;
+
         if (in_array($language, $this->tag_array)) {
             return $language;
         }

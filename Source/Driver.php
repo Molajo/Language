@@ -8,26 +8,25 @@
  */
 namespace Molajo\Language;
 
-use CommonApi\Exception\RuntimeException;
 use CommonApi\Language\LanguageInterface;
 
 /**
- * Adapter for Language
+ * Language Driver
  *
  * @package    Molajo
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @since      1.0
  */
-class Adapter implements LanguageInterface
+class Driver implements LanguageInterface
 {
     /**
-     * Language Adapter Handler
+     * Language Adapter
      *
      * @var     object CommonApi\Language\LanguageInterface
      * @since   1.0
      */
-    protected $handler;
+    protected $adapter;
 
     /**
      * Language
@@ -45,10 +44,10 @@ class Adapter implements LanguageInterface
      * @since   1.0
      */
     public function __construct(
-        LanguageInterface $handler,
+        LanguageInterface $adapter,
         $language
     ) {
-        $this->handler  = $handler;
+        $this->adapter  = $adapter;
         $this->language = $language;
     }
 
@@ -66,7 +65,7 @@ class Adapter implements LanguageInterface
      */
     public function get($key = null, $default = null)
     {
-        return $this->handler->get($key, $default);
+        return $this->adapter->get($key, $default);
     }
 
     /**
@@ -84,7 +83,7 @@ class Adapter implements LanguageInterface
      */
     public function translate($string)
     {
-        return $this->handler->translate($string);
+        return $this->adapter->translate($string);
     }
 
     /**
@@ -97,6 +96,6 @@ class Adapter implements LanguageInterface
      */
     public function setUntranslatedString($string)
     {
-        return $this->handler->setUntranslatedString($string);
+        return $this->adapter->setUntranslatedString($string);
     }
 }

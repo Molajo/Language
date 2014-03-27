@@ -1,12 +1,12 @@
 <?php
 /**
- * Database Handler for Language
+ * Database Adapter for Language
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  */
-namespace Molajo\Language\Handler;
+namespace Molajo\Language\Adapter;
 
 use stdClass;
 use CommonApi\Language\LanguageInterface;
@@ -14,14 +14,14 @@ use CommonApi\Language\DatabaseModelInterface;
 use CommonApi\Exception\RuntimeException;
 
 /**
- * Database Handler for Language
+ * Database Adapter for Language
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0
  */
-class Database extends AbstractHandler implements LanguageInterface
+class Database extends AbstractAdapter implements LanguageInterface
 {
     /**
      * Language
