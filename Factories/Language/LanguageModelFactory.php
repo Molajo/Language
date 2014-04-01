@@ -172,6 +172,8 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         $model_registry       = $this->dependencies['Resource']->get(
             'xml:///Molajo//Model//Datasource//Languages.xml'
         );
+        $public_view_group_id = 1;
+        $primary_category_id = 12;
 
         $class = 'Molajo\\Language\\Adapter\\DatabaseModel';
 
@@ -182,7 +184,9 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
                 $this->dependencies['Query'],
                 $null_date,
                 $current_date,
-                $model_registry
+                $model_registry,
+                $public_view_group_id,
+                $primary_category_id
             );
         } catch (Exception $e) {
 

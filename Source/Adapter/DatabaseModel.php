@@ -31,7 +31,15 @@ class DatabaseModel implements DatabaseModelInterface
      * @var    int
      * @since  1.0
      */
-    protected $public_view_group_id = null;
+    protected $public_view_group_id = 1;
+
+    /**
+     * Primary Category ID
+     *
+     * @var    int
+     * @since  1.0
+     */
+    protected $primary_category_id = 12;
 
     /**
      * Applications Array
@@ -117,12 +125,14 @@ class DatabaseModel implements DatabaseModelInterface
     /**
      * Construct
      *
-     * @param  int                   $application_id
-     * @param  DatabaseInterface     $database
-     * @param  QueryInterface        $query
-     * @param  string                $null_date
-     * @param  string                $current_date
-     * @param                        $model_registry
+     * @param  int                $application_id
+     * @param  DatabaseInterface  $database
+     * @param  QueryInterface     $query
+     * @param  string             $null_date
+     * @param  string             $current_date
+     * @param                     $model_registry
+     * @param  integer            $public_view_group_id
+     * @param  integer            $primary_category_id
      *
      * @since  1.0
      */
@@ -132,14 +142,18 @@ class DatabaseModel implements DatabaseModelInterface
         QueryInterface $query,
         $null_date,
         $current_date,
-        $model_registry = null
+        $model_registry = null,
+        $public_view_group_id = 1,
+        $primary_category_id = 12
     ) {
-        $this->application_id = $application_id;
-        $this->database       = $database;
-        $this->query          = $query;
-        $this->null_date      = $null_date;
-        $this->current_date   = $current_date;
-        $this->model_registry = $model_registry;
+        $this->application_id       = (int)$application_id;
+        $this->database             = $database;
+        $this->query                = $query;
+        $this->null_date            = $null_date;
+        $this->current_date         = $current_date;
+        $this->model_registry       = $model_registry;
+        $this->public_view_group_id = (int)$public_view_group_id;
+        $this->primary_category_id  = (int)$primary_category_id;
 
         $this->setInstalledLanguages();
         $this->getApplications();
@@ -181,6 +195,7 @@ class DatabaseModel implements DatabaseModelInterface
      */
     public function setInstalledLanguages()
     {
+        $data_parameters     = new stdClass();
         $registry_parameters = $this->model_registry['parameters'];
 
         try {
@@ -201,8 +216,8 @@ class DatabaseModel implements DatabaseModelInterface
         foreach ($data as $language) {
 
             $temp_row                        = new stdClass();
-            $temp_row->extension_id          = $language->extension_id;
-            $temp_row->extension_instance_id = $language->id;
+            $temp_row->extension_id          = (int)$language->extension_id;
+            $temp_row->extension_instance_id = (int)$language->id;
             $temp_row->title                 = $language->subtitle;
             $temp_row->tag                   = $language->title;
             $temp_parameters                 = json_decode($language->parameters);
@@ -234,7 +249,9 @@ class DatabaseModel implements DatabaseModelInterface
                     $value = null;
                 }
 
-                $type = $parameters['type'];
+                if ($value === null) {
+                    $value = $default;
+                }
 
                 $temp_row->$key = $value;
             }
@@ -255,6 +272,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  array
      * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function getLanguageStrings($language = 'en-GB')
     {
@@ -326,6 +344,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  int
      * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function exists($string, $language)
     {
@@ -361,47 +380,53 @@ class DatabaseModel implements DatabaseModelInterface
      */
     public function saveLanguageString($language_string, $language, $parent_id)
     {
+        $path = 'languagestrings';
+        if ($language == 'string') {
+        } else {
+            $path .= '/' . strtolower(trim($language));
+        }
+
         try {
             $this->query->clearQuery();
 
             $this->query->setType('insert');
             $this->query->from('#__language_strings');
 
-            $this->query->select('site_id', null, 0, 'integer');
-            $this->query->select('extension_instance_id', null, 6250, 'integer');
-            $this->query->select('catalog_type_id', null, 6250, 'integer');
+            $this->query->select('site_id', null, (int)0, 'integer');
+            $this->query->select('extension_instance_id', null, (int)6250, 'integer');
+            $this->query->select('catalog_type_id', null, (int)6250, 'integer');
             $this->query->select('title', null, $language_string, 'string');
             $this->query->select('subtitle', null, '', 'string');
-            $this->query->select('path', null, 'languagestrings', 'string');
+            $this->query->select('path', null, $path, 'string');
             $this->query->select('alias', null, $language_string, 'alias');
             $this->query->select('content_text', null, $language_string, 'string');
-            $this->query->select('protected', null, 0, 'integer');
-            $this->query->select('featured', null, 0, 'integer');
-            $this->query->select('stickied', null, 0, 'integer');
-            $this->query->select('status', null, 1, 'integer');
+            $this->query->select('protected', null, (int)0, 'integer');
+            $this->query->select('featured', null, (int)0, 'integer');
+            $this->query->select('stickied', null, (int)0, 'integer');
+            $this->query->select('status', null, (int)1, 'integer');
             $this->query->select('start_publishing_datetime', null, $this->current_date, 'datetime');
             $this->query->select('stop_publishing_datetime', null, $this->null_date, 'datetime');
-            $this->query->select('version', null, 1, 'integer');
-            $this->query->select('version_of_id', null, 0, 'integer');
-            $this->query->select('status_prior_to_version', null, 0, 'integer');
+            $this->query->select('version', null, (int)1, 'integer');
+            $this->query->select('version_of_id', null, (int)0, 'integer');
+            $this->query->select('status_prior_to_version', null, (int)0, 'integer');
             $this->query->select('created_datetime', null, $this->current_date, 'datetime');
-            $this->query->select('created_by', null, 1, 'integer');
+            $this->query->select('created_by', null, (int)1, 'integer');
             $this->query->select('modified_datetime', null, $this->current_date, 'datetime');
-            $this->query->select('modified_by', null, 1, 'integer');
+            $this->query->select('modified_by', null, (int)1, 'integer');
             $this->query->select('checked_out_datetime', null, $this->null_date, 'datetime');
-            $this->query->select('checked_out_by', null, 0, 'integer');
-            $this->query->select('root', null, 0, 'integer');
+            $this->query->select('checked_out_by', null, (int)0, 'integer');
+            $this->query->select('root', null, (int)0, 'integer');
             $this->query->select('parent_id', null, (int)$parent_id, 'integer');
-            $this->query->select('lft', null, 0, 'integer');
-            $this->query->select('rgt', null, 0, 'integer');
-            $this->query->select('lvl', null, 0, 'integer');
-            $this->query->select('home', null, 0, 'integer');
+            $this->query->select('lft', null, (int)0, 'integer');
+            $this->query->select('rgt', null, (int)0, 'integer');
+            $this->query->select('lvl', null, (int)1, 'integer');
+            $this->query->select('home', null, (int)0, 'integer');
             $this->query->select('customfields', null, '{}', 'string');
             $this->query->select('parameters', null, '{}', 'string');
             $this->query->select('metadata', null, '{}', 'string');
             $this->query->select('language', null, $language, 'string');
-            $this->query->select('translation_of_id', null, 0, 'integer');
-            $this->query->select('ordering', null, 0, 'integer');
+            $this->query->select('translation_of_id', null, (int)0, 'integer');
+            $this->query->select('ordering', null, (int)0, 'integer');
 
             $this->database->execute($this->query->getSQL());
 
@@ -425,6 +450,7 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  $this
      * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function insertCatalogEntry($language_id)
     {
@@ -437,17 +463,18 @@ class DatabaseModel implements DatabaseModelInterface
                 $this->query->clearQuery();
 
                 $this->query->setType('insert');
-                $this->query->from('#__language_strings');
+                $this->query->from('#__catalog');
 
-                $this->query->select('application_id', null, $application_id, 'integer');
-                $this->query->select('source_id', null, $language_id, 'integer');
-                $this->query->select('enabled', null, 1, 'integer');
-                $this->query->select('redirect_to_id', null, 0, 'integer');
+                $this->query->select('application_id', null, (int)$application_id, 'integer');
+                $this->query->select('catalog_type_id', null, (int)6250, 'integer');
+                $this->query->select('source_id', null, (int)$language_id, 'integer');
+                $this->query->select('enabled', null, (int)1, 'integer');
+                $this->query->select('redirect_to_id', null, (int)0, 'integer');
                 $this->query->select('sef_request', null, $sef_request, 'string');
                 $this->query->select('page_type', null, 'item', 'string');
-                $this->query->select('extension_instance_id', null, 6250, 'integer');
-                $this->query->select('view_group_id', null, $this->public_view_group_id, 'integer');
-                $this->query->select('primary_category_id', null, 6250, 'integer');
+                $this->query->select('extension_instance_id', null, (int)6250, 'integer');
+                $this->query->select('view_group_id', null, (int)$this->public_view_group_id, 'integer');
+                $this->query->select('primary_category_id', null, (int)$this->primary_category_id, 'integer');
 
                 $this->database->execute($this->query->getSQL());
             }
@@ -462,11 +489,11 @@ class DatabaseModel implements DatabaseModelInterface
     /**
      * Determine if the language string exists for the language
      *
-     * @param   string $string
-     * @param   string $language
+     * @param   int  $language_id
      *
      * @return  int
      * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function getSEFRequest($language_id)
     {
@@ -489,11 +516,9 @@ class DatabaseModel implements DatabaseModelInterface
     /**
      * Determine if the language string exists for the language
      *
-     * @param   string $string
-     * @param   string $language
-     *
      * @return  $this
      * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function getApplications()
     {
