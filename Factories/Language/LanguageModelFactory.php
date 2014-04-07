@@ -61,7 +61,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      *
      * @return  array
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException;
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function setDependencies(array $reflection = null)
     {
@@ -83,7 +83,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      *
      * @return  object
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException;
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function instantiateClass()
     {
@@ -112,7 +112,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      *
      * @return  object
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException;
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function instantiateDatabaseAdapter($model, $language)
     {
@@ -161,7 +161,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      *
      * @return  object
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException;
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function instantiateDatabaseModel()
     {
@@ -206,7 +206,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      *
      * @return  string
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException;
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function setLanguage()
     {

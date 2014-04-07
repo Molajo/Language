@@ -219,7 +219,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      *
      * @return  int  $this
      * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException;
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function get($key = null, $default = null)
     {
