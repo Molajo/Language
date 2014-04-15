@@ -20,7 +20,7 @@ use Molajo\IoC\FactoryMethodBase;
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
- * @since      1.0
+ * @since      1.0.0
  */
 class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterface, FactoryBatchInterface
 {
@@ -72,7 +72,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         $this->dependencies['Runtimedata'] = $options;
         $this->dependencies['Resource']    = $options;
         $this->dependencies['Database']    = $options;
-        $this->dependencies['Query']       = $options;
+        $this->dependencies['Query2']       = $options;
         $this->dependencies['User']        = $options;
 
         return $this->dependencies;
@@ -167,8 +167,8 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
     {
         $public_view_group_id = 1;
         $database             = $this->dependencies['Database'];
-        $null_date            = $this->dependencies['Query']->getNullDate();
-        $current_date         = $this->dependencies['Query']->getDate();
+        $null_date            = $this->dependencies['Query2']->getNullDate();
+        $current_date         = $this->dependencies['Query2']->getDate();
         $model_registry       = $this->dependencies['Resource']->get(
             'xml:///Molajo//Model//Datasource//Languages.xml'
         );
@@ -181,7 +181,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
             $databasemodel = new $class(
                 $public_view_group_id,
                 $database,
-                $this->dependencies['Query'],
+                $this->dependencies['Query2'],
                 $null_date,
                 $current_date,
                 $model_registry,
