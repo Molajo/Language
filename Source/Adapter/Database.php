@@ -9,7 +9,9 @@
 namespace Molajo\Language\Adapter;
 
 use stdClass;
+use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
+use CommonApi\Language\TranslateInterface;
 use CommonApi\Language\DatabaseModelInterface;
 use CommonApi\Exception\RuntimeException;
 
@@ -21,7 +23,8 @@ use CommonApi\Exception\RuntimeException;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter implements LanguageInterface
+class Database extends AbstractAdapter
+    implements CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
 {
     /**
      * Language
@@ -138,7 +141,7 @@ class Database extends AbstractAdapter implements LanguageInterface
     /**
      * List of Properties
      *
-     * @var    object
+     * @var    array
      * @since  1.0
      */
     protected $property_array = array(
@@ -243,7 +246,9 @@ class Database extends AbstractAdapter implements LanguageInterface
         if (in_array($key, $this->property_array)) {
         } else {
             throw new RuntimeException
-            ('Language Class: attempting to get value for unknown property: ' . $key);
+            (
+                'Language Class: attempting to get value for unknown property: ' . $key
+            );
         }
 
         if ($this->$key === null) {
@@ -315,7 +320,7 @@ class Database extends AbstractAdapter implements LanguageInterface
             }
         }
 
-        $this->setUntranslatedString($key);
+        $this->setString($key);
 
         return $string;
     }
@@ -328,9 +333,9 @@ class Database extends AbstractAdapter implements LanguageInterface
      * @return  $this
      * @since   1.0
      */
-    public function setUntranslatedString($string)
+    public function setString($string)
     {
-        $this->model->setUntranslatedString($string);
+        $this->model->setString($string);
 
         return $this;
     }

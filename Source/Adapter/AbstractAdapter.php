@@ -8,7 +8,9 @@
  */
 namespace Molajo\Language\Adapter;
 
+use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
+use CommonApi\Language\TranslateInterface;
 
 /**
  * Abstract Language Adapter
@@ -18,7 +20,7 @@ use CommonApi\Language\LanguageInterface;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-abstract class AbstractAdapter implements LanguageInterface
+abstract class AbstractAdapter implements CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
 {
     /**
      * Get Language Properties
@@ -30,41 +32,27 @@ abstract class AbstractAdapter implements LanguageInterface
      * @param   null|string $default
      *
      * @return  int  $this
-     * @since   1.0
+     * @since   1.0.0
      */
-    public function get($key = null, $default = null)
-    {
-        return $this;
-    }
+    abstract public function get($key = null, $default = null);
 
     /**
      * Translate String
      *
-     *  - Current language
-     *  - Default language
-     *  - Final fallback en-GB
-     *  - Store as untranslated string
-     *
      * @param   $string
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      */
-    public function translate($string)
-    {
-        return $string;
-    }
+    abstract public function translate($string);
 
     /**
-     * Store Untranslated Language Strings
+     * Save untranslated strings for localization
      *
-     * @param   $string
+     * @param   string $string
      *
-     * @return  $this
-     * @since   1.0
+     * @return  bool
+     * @since   1.0.0
      */
-    public function setUntranslatedString($string)
-    {
-        return $string;
-    }
+    abstract public function setString($string);
 }

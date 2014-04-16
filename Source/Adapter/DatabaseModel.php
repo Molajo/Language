@@ -12,7 +12,6 @@ use stdClass;
 use Exception;
 use CommonApi\Database\DatabaseInterface;
 use CommonApi\Exception\RuntimeException;
-use CommonApi\Language\DatabaseModelInterface;
 use CommonApi\Query\QueryInterface;
 
 /**
@@ -23,7 +22,7 @@ use CommonApi\Query\QueryInterface;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class DatabaseModel implements DatabaseModelInterface
+class DatabaseModel
 {
     /**
      * Public View Group ID
@@ -52,7 +51,7 @@ class DatabaseModel implements DatabaseModelInterface
     /**
      * Database Instance
      *
-     * @var    object   CommonApi\Database\DatabaseInterface
+     * @var    object  CommonApi\Database\DatabaseInterface
      * @since  1.0
      */
     protected $database = null;
@@ -60,7 +59,7 @@ class DatabaseModel implements DatabaseModelInterface
     /**
      * Query Object
      *
-     * @var    object   CommonApi\Query\QueryInterface
+     * @var    object  CommonApi\Query\QueryInterface
      * @since  1.0
      */
     protected $query = null;
@@ -108,7 +107,7 @@ class DatabaseModel implements DatabaseModelInterface
     /**
      * List of Properties
      *
-     * @var    object
+     * @var    array
      * @since  1.0
      */
     protected $property_array = array(
@@ -174,7 +173,9 @@ class DatabaseModel implements DatabaseModelInterface
         if (in_array($key, $this->property_array)) {
         } else {
             throw new RuntimeException
-            ('Language Database: Get Key not known: ' . $key);
+            (
+                'Language Database: Get Key not known: ' . $key
+            );
         }
 
         if (isset($this->$key)) {
@@ -210,7 +211,9 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage());
+            (
+                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
+            );
         }
 
         foreach ($data as $language) {
@@ -291,12 +294,16 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage());
+            (
+                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
+            );
         }
 
         if (count($data) === 0) {
             throw new RuntimeException
-            ('Language DatabaseModel setInstalledLanguages: No Language strings for Language.');
+            (
+                'Language DatabaseModel setInstalledLanguages: No Language strings for Language.'
+            );
         }
 
         $strings = array();
@@ -315,8 +322,9 @@ class DatabaseModel implements DatabaseModelInterface
      *
      * @return  $this
      * @since   1.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function setUntranslatedString($string)
+    public function setString($string)
     {
         $language  = 'string';
         $parent_id = $this->exists($string, $language);
@@ -360,8 +368,10 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel exists query failed for Language/String: '
-            . $language . '/' . $string . $e->getMessage());
+            (
+                'DatabaseModel exists query failed for Language/String: '
+                . $language . '/' . $string . $e->getMessage()
+            );
         }
 
         return (int)$result;
@@ -432,8 +442,10 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel exists query failed for Language/String: '
-            . $language . '/' . $language_string . $e->getMessage());
+            (
+                'DatabaseModel exists query failed for Language/String: '
+                . $language . '/' . $language_string . $e->getMessage()
+            );
         }
 
         $language_id = (int)$this->database->getInsertId();
@@ -481,15 +493,17 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel exists query failed for Language/String: '
-            . $language_id . '/' . $sef_request . $e->getMessage());
+            (
+                'DatabaseModel exists query failed for Language/String: '
+                . $language_id . '/' . $sef_request . $e->getMessage()
+            );
         }
     }
 
     /**
      * Determine if the language string exists for the language
      *
-     * @param   int  $language_id
+     * @param   int $language_id
      *
      * @return  int
      * @since   1.0
@@ -508,8 +522,10 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel getSEFRequest Query Failed Language string Primary Key: '
-            . $language_id . $e->getMessage());
+            (
+                'DatabaseModel getSEFRequest Query Failed Language string Primary Key: '
+                . $language_id . $e->getMessage()
+            );
         }
     }
 
@@ -532,7 +548,9 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel getApplications Query Failed ' . $e->getMessage());
+            (
+                'DatabaseModel getApplications Query Failed ' . $e->getMessage()
+            );
         }
 
         foreach ($applications as $application) {

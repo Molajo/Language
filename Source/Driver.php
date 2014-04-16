@@ -8,6 +8,7 @@
  */
 namespace Molajo\Language;
 
+use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
 
 /**
@@ -18,13 +19,13 @@ use CommonApi\Language\LanguageInterface;
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @since      1.0.0
  */
-class Driver implements LanguageInterface
+class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
 {
     /**
      * Language Adapter
      *
      * @var     object CommonApi\Language\LanguageInterface
-     * @since   1.0
+     * @since   1.0.0
      */
     protected $adapter;
 
@@ -32,7 +33,7 @@ class Driver implements LanguageInterface
      * Language
      *
      * @var    string
-     * @since  1.0
+     * @since   1.0.0
      */
     protected $language;
 
@@ -41,7 +42,7 @@ class Driver implements LanguageInterface
      *
      * @param   LanguageInterface $language
      *
-     * @since   1.0
+     * @since   1.0.0
      */
     public function __construct(
         LanguageInterface $adapter,
@@ -60,8 +61,8 @@ class Driver implements LanguageInterface
      * @param   null|string $key
      * @param   null|string $default
      *
-     * @return  int
-     * @since   1.0
+     * @return  int  $this
+     * @since   1.0.0
      */
     public function get($key = null, $default = null)
     {
@@ -71,15 +72,10 @@ class Driver implements LanguageInterface
     /**
      * Translate String
      *
-     *  - Current language
-     *  - Default language
-     *  - Final fallback en-GB
-     *  - Store as untranslated string
-     *
      * @param   $string
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      */
     public function translate($string)
     {
@@ -87,15 +83,15 @@ class Driver implements LanguageInterface
     }
 
     /**
-     * Store Untranslated Language Strings
+     * Save untranslated strings for localization
      *
-     * @param   $string
+     * @param   string $string
      *
-     * @return  $this
-     * @since   1.0
+     * @return  bool
+     * @since   1.0.0
      */
-    public function setUntranslatedString($string)
+    public function setString($string)
     {
-        return $this->adapter->setUntranslatedString($string);
+        return $this->adapter->setString($string);
     }
 }
