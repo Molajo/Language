@@ -8,7 +8,6 @@
  */
 namespace Molajo\Language;
 
-use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
 
 /**
@@ -19,13 +18,13 @@ use CommonApi\Language\LanguageInterface;
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @since      1.0.0
  */
-class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
+class Driver implements LanguageInterface
 {
     /**
      * Language Adapter
      *
      * @var     object CommonApi\Language\LanguageInterface
-     * @since   1.0.0
+     * @since   1.0
      */
     protected $adapter;
 
@@ -33,7 +32,7 @@ class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslat
      * Language
      *
      * @var    string
-     * @since   1.0.0
+     * @since  1.0
      */
     protected $language;
 
@@ -42,7 +41,7 @@ class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslat
      *
      * @param   LanguageInterface $language
      *
-     * @since   1.0.0
+     * @since   1.0
      */
     public function __construct(
         LanguageInterface $adapter,
@@ -61,8 +60,8 @@ class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslat
      * @param   null|string $key
      * @param   null|string $default
      *
-     * @return  int  $this
-     * @since   1.0.0
+     * @return  int
+     * @since   1.0
      */
     public function get($key = null, $default = null)
     {
@@ -72,10 +71,15 @@ class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslat
     /**
      * Translate String
      *
+     *  - Current language
+     *  - Default language
+     *  - Final fallback en-GB
+     *  - Store as untranslated string
+     *
      * @param   $string
      *
      * @return  string
-     * @since   1.0.0
+     * @since   1.0
      */
     public function translate($string)
     {
@@ -83,12 +87,12 @@ class Driver implements LanguageInterface, TranslateInterface, CaptureUntranslat
     }
 
     /**
-     * Save untranslated strings for localization
+     * Store Untranslated Language Strings
      *
-     * @param   string $string
+     * @param   $string
      *
-     * @return  bool
-     * @since   1.0.0
+     * @return  $this
+     * @since   1.0
      */
     public function setString($string)
     {

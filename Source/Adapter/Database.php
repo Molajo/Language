@@ -9,9 +9,7 @@
 namespace Molajo\Language\Adapter;
 
 use stdClass;
-use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
-use CommonApi\Language\TranslateInterface;
 use CommonApi\Language\DatabaseModelInterface;
 use CommonApi\Exception\RuntimeException;
 
@@ -23,8 +21,7 @@ use CommonApi\Exception\RuntimeException;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter
-    implements CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
+class Database extends AbstractAdapter implements LanguageInterface
 {
     /**
      * Language
@@ -141,7 +138,7 @@ class Database extends AbstractAdapter
     /**
      * List of Properties
      *
-     * @var    array
+     * @var    object
      * @since  1.0
      */
     protected $property_array = array(
@@ -246,9 +243,7 @@ class Database extends AbstractAdapter
         if (in_array($key, $this->property_array)) {
         } else {
             throw new RuntimeException
-            (
-                'Language Class: attempting to get value for unknown property: ' . $key
-            );
+            ('Language Class: attempting to get value for unknown property: ' . $key);
         }
 
         if ($this->$key === null) {

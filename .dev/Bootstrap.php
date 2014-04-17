@@ -16,9 +16,9 @@ if (! defined('PHP_VERSION_ID')) {
 $base     = substr(__DIR__, 0, strlen(__DIR__) - 5);
 $classmap = array();
 
-$results  = createClassMap($base . '/Source/Adapter/', 'Molajo\\Language\\Adapter\\');
+$results  = createClassMap($base . '/Source/Adapter', 'Molajo\\Language\\Adapter\\');
 $classmap = array_merge($classmap, $results);
-$results  = createClassMap($base . '/Factories/', 'Molajo\\Factories\\Language\\');
+$results  = createClassMap($base . '/Factories/Language', 'Molajo\\Factories\\Language\\');
 $classmap = array_merge($classmap, $results);
 $results  = createClassMap($base . '/vendor/commonapi/language', 'CommonApi\\Language\\');
 $classmap = array_merge($classmap, $results);

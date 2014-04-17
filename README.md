@@ -4,12 +4,12 @@ Language Package
 
 [![Build Status](https://travis-ci.org/Molajo/Language.png?branch=master)](https://travis-ci.org/Molajo/Language)
 
-Language Services supporting translations for User Interface language strings for PHP applications
-Adapters for different implementation types (ex., Database, .PO, Joomla *.ini)
+Language Services supporting translations for the User Interface for PHP applications using Adapters for different
+implementation types (ex., Database, *.ini files, etc.).
 
 ## System Requirements ##
 
-* PHP 5.4, or above
+* PHP 5.3.3, or above
 * [PSR-0 compliant Autoloader](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md)
 * PHP Framework independent
 * [optional] PHPUnit 3.5+ to execute the test suite (phpunit --version)
