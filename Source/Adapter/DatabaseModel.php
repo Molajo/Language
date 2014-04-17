@@ -160,6 +160,33 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
     }
 
     /**
+     * Get the current value (or default) of the specified key
+     *
+     * @param   string $key
+     * @param   null   $default
+     *
+     * @return  mixed
+     * @since   1.0.0
+     * @throws  \CommonApi\Exception\RuntimeException
+     */
+    public function get($key, $default = null)
+    {
+        if (in_array($key, $this->property_array)) {
+        } else {
+            throw new RuntimeException
+            ('Language Database: Get Key not known: ' . $key);
+        }
+
+        if (isset($this->$key)) {
+            return $this->$key;
+        }
+
+        $this->$key = $default;
+
+        return $this->$key;
+    }
+
+    /**
      * Retrieve installed languages for this application
      *
      * @return  $this
