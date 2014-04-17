@@ -38,7 +38,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
      * @param   array $options
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testMock()
     {

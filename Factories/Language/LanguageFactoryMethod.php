@@ -28,7 +28,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * Language List
      *
      * @var     array
-     * @since   1.0
+     * @since   1.0.0
      */
     protected $installed_languages = array();
 
@@ -36,7 +36,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * Language List
      *
      * @var     array
-     * @since   1.0
+     * @since   1.0.0
      */
     protected $tag_array = array();
 
@@ -45,7 +45,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      *
      * @param  $options
      *
-     * @since  1.0
+     * @since  1.0.0
      */
     public function __construct(array $options = array())
     {
@@ -60,7 +60,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * Instantiate a new adapter and inject it into the Adapter for the FactoryInterface
      *
      * @return  array
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     public function setDependencies(array $reflection = null)
@@ -72,7 +72,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         $this->dependencies['Runtimedata'] = $options;
         $this->dependencies['Resource']    = $options;
         $this->dependencies['Database']    = $options;
-        $this->dependencies['Query2']       = $options;
+        $this->dependencies['Query2']      = $options;
         $this->dependencies['User']        = $options;
 
         return $this->dependencies;
@@ -82,7 +82,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * Instantiate Class
      *
      * @return  object
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     public function instantiateClass()
@@ -97,8 +97,10 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
-            . ' failed.' . $e->getMessage());
+            (
+                'IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
+                . ' failed.' . $e->getMessage()
+            );
         }
 
         return $this;
@@ -111,7 +113,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * @param   string $language
      *
      * @return  object
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function instantiateDatabaseAdapter($model, $language)
@@ -149,8 +151,10 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
-            . ' failed.' . $e->getMessage());
+            (
+                'IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
+                . ' failed.' . $e->getMessage()
+            );
         }
     }
 
@@ -160,7 +164,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * @param   $adapter
      *
      * @return  object
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function instantiateDatabaseModel()
@@ -173,7 +177,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
             'xml:///Molajo//Model//Datasource//Languages.xml'
         );
         $public_view_group_id = 1;
-        $primary_category_id = 12;
+        $primary_category_id  = 12;
 
         $class = 'Molajo\\Language\\Adapter\\DatabaseModel';
 
@@ -191,8 +195,10 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         } catch (Exception $e) {
 
             throw new RuntimeException
-            ('Language Model instantiateDatabaseModel method Failed for '
-            . $class . ' in LanguageFactoryMethod ' . $e->getMessage());
+            (
+                'Language Model instantiateDatabaseModel method Failed for '
+                . $class . ' in LanguageFactoryMethod ' . $e->getMessage()
+            );
         }
 
         $this->installed_languages = $databasemodel->get('installed_languages');
@@ -205,7 +211,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * Sets language based on specific order of checking values
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     protected function setLanguage()
@@ -245,6 +251,8 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         }
 
         throw new RuntimeException
-        ('Language Factory Method: No Language Defined.');
+        (
+            'Language Factory Method: No Language Defined.'
+        );
     }
 }

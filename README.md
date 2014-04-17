@@ -5,14 +5,7 @@ Language Package
 [![Build Status](https://travis-ci.org/Molajo/Language.png?branch=master)](https://travis-ci.org/Molajo/Language)
 
 Language Services supporting translations for the User Interface for PHP applications using Adapters for different
-implementation types (ex., Database, *.ini files, etc.).
-
-## System Requirements ##
-
-* PHP 5.3.3, or above
-* [PSR-0 compliant Autoloader](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md)
-* PHP Framework independent
-* [optional] PHPUnit 3.5+ to execute the test suite (phpunit --version)
+implementation types.
 
 ### How to specify Language ###
 
@@ -89,3 +82,19 @@ To insert strings found in code but are not already in database:
 To log strings found in code, but are not already in database:
 
 - Set the Application configuration option `profile_missing_strings` to `1` and turn on `profiling`
+
+## Requirements and Compliance
+ * PHP framework independent, no dependencies
+ * Requires PHP 5.4, or above
+ * [Semantic Versioning](http://semver.org/)
+ * Compliant with:
+    * [PSR-1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md) Basic Coding Standards
+    * [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) Coding Style
+    * [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) Namespacing
+ * [phpDocumentor2] (https://github.com/phpDocumentor/phpDocumentor2)
+ * [phpUnit Testing] (https://github.com/sebastianbergmann/phpunit)
+ * Author [AmyStephen](http://twitter.com/AmyStephen)
+ * [Travis Continuous Improvement] (https://travis-ci.org/profile/Molajo)
+ * Listed on [Packagist] (http://packagist.org) and installed using [Composer] (http://getcomposer.org/)
+ * Use github to submit [pull requests](https://github.com/Molajo/Language/pulls) and [features](https://github.com/Molajo/Language/issues)
+ * Licensed under the MIT License - see the `LICENSE` file for details

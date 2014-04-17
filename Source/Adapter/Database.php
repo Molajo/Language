@@ -9,8 +9,9 @@
 namespace Molajo\Language\Adapter;
 
 use stdClass;
+use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
-use CommonApi\Language\DatabaseModelInterface;
+use CommonApi\Language\TranslateInterface;
 use CommonApi\Exception\RuntimeException;
 
 /**
@@ -21,21 +22,22 @@ use CommonApi\Exception\RuntimeException;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter implements LanguageInterface
+class Database extends AbstractAdapter
+    implements CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
 {
     /**
      * Language
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $language;
 
     /**
      * Extension ID
      *
-     * @var    string
-     * @since  1.0
+     * @var    int
+     * @since  1.0.0
      */
     protected $extension_id;
 
@@ -43,7 +45,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Extension Instance ID
      *
      * @var    int
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $extension_instance_id;
 
@@ -51,7 +53,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Title
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $title;
 
@@ -59,7 +61,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Tag
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $tag;
 
@@ -67,7 +69,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Locale
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $locale;
 
@@ -75,15 +77,15 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Rtl
      *
      * @var    boolean
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $rtl;
 
     /**
      * Direction
      *
-     * @var    boolean
-     * @since  1.0
+     * @var    string
+     * @since  1.0.0
      */
     protected $direction;
 
@@ -91,7 +93,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * First Day
      *
      * @var    int
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $first_day;
 
@@ -99,7 +101,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * UTC Offset
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $language_utc_offset;
 
@@ -107,7 +109,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Language Strings for the language loaded in this instance
      *
      * @var    array
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $language_strings = array();
 
@@ -115,7 +117,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Model Instance - save untranslated strings
      *
      * @var    object  CommonApi\Language\DatabaseModelInterface
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $model;
 
@@ -123,7 +125,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Default Language Instance
      *
      * @var    null|object  CommonApi\Language\LanguageInterface
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $default_language;
 
@@ -131,7 +133,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * Final Fallback en-GB Language Instance
      *
      * @var    null|object  CommonApi\Language\LanguageInterface
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $en_gb_instance;
 
@@ -139,7 +141,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * List of Properties
      *
      * @var    object
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $property_array = array(
         'language',
@@ -159,23 +161,23 @@ class Database extends AbstractAdapter implements LanguageInterface
     );
 
     /**
-     * constructor
+     * Constructor
      *
-     * @param string                 $language
-     * @param                        $extension_id
-     * @param                        $extension_instance_id
-     * @param                        $title
-     * @param                        $tag
-     * @param                        $locale
-     * @param                        $rtl
-     * @param                        $direction
-     * @param                        $first_day
-     * @param                        $language_utc_offset
-     * @param DatabaseModelInterface $model
-     * @param LanguageInterface      $default_language
-     * @param LanguageInterface      $en_gb_instance
+     * @param  string $language
+     * @param  int    $extension_id
+     * @param  int    $extension_instance_id
+     * @param  string $title
+     * @param  string $tag
+     * @param  string $locale
+     * @param  string $rtl
+     * @param  string $direction
+     * @param  int    $first_day
+     * @param  int    $language_utc_offset
+     * @param  object $model
+     * @param  object $default_language
+     * @param  object $en_gb_instance
      *
-     * @since  1.0
+     * @since  1.0.0
      */
     public function __construct(
         $language = 'en-GB',
@@ -188,9 +190,9 @@ class Database extends AbstractAdapter implements LanguageInterface
         $direction,
         $first_day,
         $language_utc_offset,
-        DatabaseModelInterface $model,
-        LanguageInterface $default_language = null,
-        LanguageInterface $en_gb_instance = null
+        $model,
+        $default_language = null,
+        $en_gb_instance = null
     ) {
         $this->language              = $language;
         $this->extension_id          = $extension_id;
@@ -205,7 +207,8 @@ class Database extends AbstractAdapter implements LanguageInterface
         $this->model                 = $model;
         $this->default_language      = $default_language;
         $this->en_gb_instance        = $en_gb_instance;
-        $this->language_strings      = $this->model->getLanguageStrings($this->language);
+
+        $this->language_strings = $this->model->getLanguageStrings($this->language);
     }
 
     /**
@@ -218,7 +221,7 @@ class Database extends AbstractAdapter implements LanguageInterface
      * @param   null|string $default
      *
      * @return  int  $this
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     public function get($key = null, $default = null)
@@ -243,7 +246,9 @@ class Database extends AbstractAdapter implements LanguageInterface
         if (in_array($key, $this->property_array)) {
         } else {
             throw new RuntimeException
-            ('Language Class: attempting to get value for unknown property: ' . $key);
+            (
+                'Language Database Adapter: Attempting to get value for unknown property: ' . $key
+            );
         }
 
         if ($this->$key === null) {
@@ -256,15 +261,10 @@ class Database extends AbstractAdapter implements LanguageInterface
     /**
      * Translate String
      *
-     *  - Current language
-     *  - Default language
-     *  - Final fallback en-GB
-     *  - Store as untranslated string
-     *
-     * @param   $string
+     * @param   string  $string
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      */
     public function translate($string)
     {
@@ -273,25 +273,30 @@ class Database extends AbstractAdapter implements LanguageInterface
             $found = array();
 
             foreach ($string as $item) {
-                $found[$item] = $this->translateSearch($string);
+                $found[$item] = $this->search ($string);
             }
 
             return $found;
         }
 
-        return $this->translateSearch($string);
+        return $this->search ($string);
     }
 
     /**
-     * Search for Translation
+     * Search sequence for translation:
      *
-     * @param   $string
+     *  - Current language
+     *  - Default language
+     *  - Final fallback en-GB
+     *  - Store as untranslated string - send back, as is
+     *
+     * @param   string  $string
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function translateSearch($string)
+    protected function search ($string)
     {
         $key = strtolower($string);
 
@@ -323,10 +328,10 @@ class Database extends AbstractAdapter implements LanguageInterface
     /**
      * Store Untranslated Language Strings
      *
-     * @param   $string
+     * @param   string  $string
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function setString($string)
     {

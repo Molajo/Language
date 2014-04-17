@@ -12,7 +12,7 @@ use stdClass;
 use Exception;
 use CommonApi\Database\DatabaseInterface;
 use CommonApi\Exception\RuntimeException;
-use CommonApi\Language\DatabaseModelInterface;
+use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Query\QueryInterface;
 
 /**
@@ -23,13 +23,13 @@ use CommonApi\Query\QueryInterface;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class DatabaseModel implements DatabaseModelInterface
+class DatabaseModel implements CaptureUntranslatedStringInterface
 {
     /**
      * Public View Group ID
      *
      * @var    int
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $public_view_group_id = 1;
 
@@ -37,7 +37,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Primary Category ID
      *
      * @var    int
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $primary_category_id = 12;
 
@@ -45,7 +45,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Applications Array
      *
      * @var    array
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $applications = array();
 
@@ -53,7 +53,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Database Instance
      *
      * @var    object   CommonApi\Database\DatabaseInterface
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $database = null;
 
@@ -61,7 +61,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Query Object
      *
      * @var    object   CommonApi\Query\QueryInterface
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $query = null;
 
@@ -69,7 +69,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Used in queries to determine date validity
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $null_date;
 
@@ -77,7 +77,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Today's CCYY-MM-DD 00:00:00 formatted for query
      *
      * @var    string
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $current_date;
 
@@ -85,7 +85,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Model Registry
      *
      * @var    array
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $model_registry = null;
 
@@ -93,7 +93,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Language List
      *
      * @var     array
-     * @since   1.0
+     * @since   1.0.0
      */
     protected $installed_languages = array();
 
@@ -101,7 +101,7 @@ class DatabaseModel implements DatabaseModelInterface
      * Language List
      *
      * @var     array
-     * @since   1.0
+     * @since   1.0.0
      */
     protected $tag_array = array();
 
@@ -109,7 +109,7 @@ class DatabaseModel implements DatabaseModelInterface
      * List of Properties
      *
      * @var    object
-     * @since  1.0
+     * @since  1.0.0
      */
     protected $property_array = array(
         'application_id',
@@ -134,7 +134,7 @@ class DatabaseModel implements DatabaseModelInterface
      * @param  integer            $public_view_group_id
      * @param  integer            $primary_category_id
      *
-     * @since  1.0
+     * @since  1.0.0
      */
     public function __construct(
         $application_id,
@@ -160,40 +160,13 @@ class DatabaseModel implements DatabaseModelInterface
     }
 
     /**
-     * Get the current value (or default) of the specified key
-     *
-     * @param   string $key
-     * @param   null   $default
-     *
-     * @return  mixed
-     * @since   1.0
-     * @throws  \CommonApi\Exception\RuntimeException
-     */
-    public function get($key, $default = null)
-    {
-        if (in_array($key, $this->property_array)) {
-        } else {
-            throw new RuntimeException
-            ('Language Database: Get Key not known: ' . $key);
-        }
-
-        if (isset($this->$key)) {
-            return $this->$key;
-        }
-
-        $this->$key = $default;
-
-        return $this->$key;
-    }
-
-    /**
      * Retrieve installed languages for this application
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function setInstalledLanguages()
+    protected function setInstalledLanguages()
     {
         $data_parameters     = new stdClass();
         $registry_parameters = $this->model_registry['parameters'];
@@ -210,7 +183,9 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage());
+            (
+                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
+            );
         }
 
         foreach ($data as $language) {
@@ -271,7 +246,7 @@ class DatabaseModel implements DatabaseModelInterface
      * @param   string $language
      *
      * @return  array
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
     public function getLanguageStrings($language = 'en-GB')
@@ -291,12 +266,16 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage());
+            (
+                'DatabaseModel getLanguageStrings Query Failed: ' . $e->getMessage()
+            );
         }
 
         if (count($data) === 0) {
             throw new RuntimeException
-            ('Language DatabaseModel setInstalledLanguages: No Language strings for Language.');
+            (
+                'Language DatabaseModel getLanguageStrings: No Language strings for Language.'
+            );
         }
 
         $strings = array();
@@ -314,7 +293,7 @@ class DatabaseModel implements DatabaseModelInterface
      * @param   string $string
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function setString($string)
     {
@@ -343,10 +322,10 @@ class DatabaseModel implements DatabaseModelInterface
      * @param   string $language
      *
      * @return  int
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function exists($string, $language)
+    protected function exists($string, $language)
     {
         try {
             $this->query->clearQuery();
@@ -360,8 +339,10 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel exists query failed for Language/String: '
-            . $language . '/' . $string . $e->getMessage());
+            (
+                'DatabaseModel exists query failed for Language/String: '
+                . $language . '/' . $string . $e->getMessage()
+            );
         }
 
         return (int)$result;
@@ -375,10 +356,10 @@ class DatabaseModel implements DatabaseModelInterface
      * @param   int    $parent_id
      *
      * @return  int
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function saveLanguageString($language_string, $language, $parent_id)
+    protected function saveLanguageString($language_string, $language, $parent_id)
     {
         $path = 'languagestrings';
         if ($language == 'string') {
@@ -432,8 +413,10 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel exists query failed for Language/String: '
-            . $language . '/' . $language_string . $e->getMessage());
+            (
+                'DatabaseModel saveLanguageString exists query failed for Language/String: '
+                . $language . '/' . $language_string . $e->getMessage()
+            );
         }
 
         $language_id = (int)$this->database->getInsertId();
@@ -449,10 +432,10 @@ class DatabaseModel implements DatabaseModelInterface
      * @param   int $language_id
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function insertCatalogEntry($language_id)
+    protected function insertCatalogEntry($language_id)
     {
         $sef_request = 'languagestrings/' . $this->getSEFRequest($language_id);
 
@@ -481,21 +464,23 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel exists query failed for Language/String: '
-            . $language_id . '/' . $sef_request . $e->getMessage());
+            (
+                'DatabaseModel insertCatalogEntry query failed for Language/String: '
+                . $language_id . '/' . $sef_request . $e->getMessage()
+            );
         }
     }
 
     /**
      * Determine if the language string exists for the language
      *
-     * @param   int  $language_id
+     * @param   int $language_id
      *
      * @return  int
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function getSEFRequest($language_id)
+    protected function getSEFRequest($language_id)
     {
         try {
             $this->query->clearQuery();
@@ -508,8 +493,10 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel getSEFRequest Query Failed Language string Primary Key: '
-            . $language_id . $e->getMessage());
+            (
+                'DatabaseModel getSEFRequest Query Failed Language string Primary Key: '
+                . $language_id . $e->getMessage()
+            );
         }
     }
 
@@ -517,10 +504,10 @@ class DatabaseModel implements DatabaseModelInterface
      * Determine if the language string exists for the language
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function getApplications()
+    protected function getApplications()
     {
         try {
             $this->query->clearQuery();
@@ -532,7 +519,9 @@ class DatabaseModel implements DatabaseModelInterface
 
         } catch (Exception $e) {
             throw new RuntimeException
-            ('DatabaseModel getApplications Query Failed ' . $e->getMessage());
+            (
+                'DatabaseModel getApplications Query Failed ' . $e->getMessage()
+            );
         }
 
         foreach ($applications as $application) {
