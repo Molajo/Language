@@ -8,9 +8,9 @@
  */
 namespace Molajo\Language;
 
-use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
 use CommonApi\Language\TranslateInterface;
+
 /**
  * Language Driver
  *
@@ -19,7 +19,7 @@ use CommonApi\Language\TranslateInterface;
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @since      1.0.0
  */
-class Driver implements CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
+class Driver implements LanguageInterface, TranslateInterface
 {
     /**
      * Language Adapter
@@ -82,21 +82,8 @@ class Driver implements CaptureUntranslatedStringInterface, LanguageInterface, T
      * @return  string
      * @since   1.0.0
      */
-    public function translate($string)
+    public function translateString($string)
     {
-        return $this->adapter->translate($string);
-    }
-
-    /**
-     * Store Untranslated Language Strings
-     *
-     * @param   string  $string
-     *
-     * @return  $this
-     * @since   1.0.0
-     */
-    public function setString($string)
-    {
-        return $this->adapter->setString($string);
+        return $this->adapter->translateString($string);
     }
 }

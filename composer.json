@@ -2,6 +2,7 @@
     "name": "molajo/language",
     "type": "molajo-package",
     "description": "Molajo Language Services for PHP Applications",
+    "version": "1.0.0",
     "keywords": ["Language", "CommonApi", "Molajo"],
     "homepage": "http://github.com/Molajo/Language",
     "license": "MIT",
@@ -9,7 +10,8 @@
         {
             "name": "Amy Stephen",
             "email": "AmyStephen@Molajo.org",
-            "homepage": "http://AmyStephen.com"
+            "homepage": "http://AmyStephen.com",
+            "role": "Developer"
         }
     ],
     "require": {

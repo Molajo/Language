@@ -8,11 +8,11 @@
  */
 namespace Molajo\Language\Adapter;
 
-use stdClass;
 use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
 use CommonApi\Language\TranslateInterface;
 use CommonApi\Exception\RuntimeException;
+use stdClass;
 
 /**
  * Database Adapter for Language
@@ -23,7 +23,7 @@ use CommonApi\Exception\RuntimeException;
  * @since      1.0.0
  */
 class Database extends AbstractAdapter
-    implements CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
+    implements LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
 {
     /**
      * Language
@@ -221,8 +221,7 @@ class Database extends AbstractAdapter
      * @param   null|string $default
      *
      * @return  int  $this
-     * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
+     * @since   1.0
      */
     public function get($key = null, $default = null)
     {
@@ -261,12 +260,12 @@ class Database extends AbstractAdapter
     /**
      * Translate String
      *
-     * @param   string  $string
+     * @param   $string
      *
      * @return  string
-     * @since   1.0.0
+     * @since   1.0
      */
-    public function translate($string)
+    public function translateString($string)
     {
         if (is_array($string)) {
 
@@ -296,7 +295,7 @@ class Database extends AbstractAdapter
      * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function search ($string)
+    protected function search($string)
     {
         $key = strtolower($string);
 
@@ -326,12 +325,12 @@ class Database extends AbstractAdapter
     }
 
     /**
-     * Store Untranslated Language Strings
+     * Save untranslated strings for localization
      *
-     * @param   string  $string
+     * @param   string $string
      *
-     * @return  $this
-     * @since   1.0.0
+     * @return  bool
+     * @since   1.0
      */
     public function setString($string)
     {

@@ -45,7 +45,7 @@ abstract class AbstractAdapter
      * @return  string
      * @since   1.0.0
      */
-    abstract public function translate($string);
+    abstract public function translateString($string);
 
     /**
      * Store Untranslated Language Strings
