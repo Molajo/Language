@@ -55,18 +55,16 @@ class Driver implements LanguageInterface, TranslateInterface
     /**
      * Get Language Properties
      *
-     * Specify null for key to have all language properties for current language
-     * returned aas an object
+     * Specify null for key to have all language properties for current language returned as an object
      *
      * @param   null|string $key
-     * @param   null|string $default
      *
-     * @return  int
+     * @return  mixed
      * @since   1.0.0
      */
-    public function get($key = null, $default = null)
+    public function get($key = null)
     {
-        return $this->adapter->get($key, $default);
+        return $this->adapter->get($key);
     }
 
     /**

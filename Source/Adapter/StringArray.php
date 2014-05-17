@@ -1,6 +1,6 @@
 <?php
 /**
- * Database Adapter for Language
+ * StringArray Adapter for Language
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
@@ -15,14 +15,14 @@ use CommonApi\Exception\RuntimeException;
 use stdClass;
 
 /**
- * Database Adapter for Language
+ * StringArray Adapter for Language
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter implements LanguageInterface, TranslateInterface
+class StringArray extends AbstractAdapter implements LanguageInterface, TranslateInterface
 {
     /**
      * Language
@@ -166,6 +166,7 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
      * @param  string                             $direction
      * @param  int                                $first_day
      * @param  int                                $language_utc_offset
+     * @param  array                              $language_strings
      * @param  CaptureUntranslatedStringInterface $model
      * @param  boolean                            $primary_language
      * @param  LanguageInterface                  $default_language
@@ -182,6 +183,7 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
         $direction,
         $first_day,
         $language_utc_offset,
+        array $language_strings,
         CaptureUntranslatedStringInterface $model,
         $primary_language = true,
         LanguageInterface $default_language = null,
@@ -189,7 +191,7 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
     ) {
         $this->model = $model;
 
-        $this->language_strings = $this->model->getLanguageStrings($language);
+        $this->language_strings = $language_strings;
 
         $this->setLanguageMetadata(
             $language,
@@ -228,7 +230,7 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
         if (in_array($key, $this->property_array)) {
         } else {
             throw new RuntimeException(
-                'Language Database Adapter: Attempting to get value for unknown property: ' . $key
+                'Language StringArray Adapter: Attempting to get value for unknown property: ' . $key
             );
         }
 

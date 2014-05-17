@@ -30,9 +30,8 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * Setup
      *
-     * @covers  Molajo\Language\Driver::__construct
-     * @covers  Molajo\Language\Adapter\Database::__construct
-     * @covers  Molajo\Language\Adapter\DatabaseModel::__construct
+     * @covers  Molajo\Language\Driver::get
+     * @covers  Molajo\Language\Driver::translateString
      */
     protected function setUp()
     {
@@ -46,28 +45,14 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Driver::get
      * @covers  Molajo\Language\Driver::translateString
      *
-     * @covers  Molajo\Language\Adapter\Database::get
-     * @covers  Molajo\Language\Adapter\Database::translateString
-     * @covers  Molajo\Language\Adapter\Database::setString
-     *
-     * @covers  Molajo\Language\Adapter\DatabaseModel::get
-     * @covers  Molajo\Language\Adapter\DatabaseModel::setInstalledLanguages
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getLanguageStrings
-     * @covers  Molajo\Language\Adapter\DatabaseModel::setString
-     * @covers  Molajo\Language\Adapter\DatabaseModel::exists
-     * @covers  Molajo\Language\Adapter\DatabaseModel::saveLanguageString
-     * @covers  Molajo\Language\Adapter\DatabaseModel::insertCatalogEntry
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getSEFRequest
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getApplications
-     *
      * @return  $this
      * @since   1.0
      */
     public function testGet()
     {
-        $results  = $this->driver->get('key', 'value');
+        $results  = $this->driver->get('key');
 
-        $this->assertEquals($results, 'value');
+        $this->assertEquals($results, null);
 
         return $this;
     }
@@ -75,20 +60,6 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers  Molajo\Language\Driver::get
      * @covers  Molajo\Language\Driver::translateString
-     *
-     * @covers  Molajo\Language\Adapter\Database::get
-     * @covers  Molajo\Language\Adapter\Database::translateString
-     * @covers  Molajo\Language\Adapter\Database::setString
-     *
-     * @covers  Molajo\Language\Adapter\DatabaseModel::get
-     * @covers  Molajo\Language\Adapter\DatabaseModel::setInstalledLanguages
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getLanguageStrings
-     * @covers  Molajo\Language\Adapter\DatabaseModel::setString
-     * @covers  Molajo\Language\Adapter\DatabaseModel::exists
-     * @covers  Molajo\Language\Adapter\DatabaseModel::saveLanguageString
-     * @covers  Molajo\Language\Adapter\DatabaseModel::insertCatalogEntry
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getSEFRequest
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getApplications
      *
      * @return  $this
      * @since   1.0
@@ -102,7 +73,6 @@ class DriverTest extends \PHPUnit_Framework_TestCase
         return $this;
     }
 }
-
 
 /**
  * Molajo Language Driver Test
@@ -121,14 +91,13 @@ class MockAdapter implements LanguageInterface, TranslateInterface
      * returned aas an object
      *
      * @param   null|string $key
-     * @param   null|string $default
      *
      * @return  int  $this
      * @since   1.0.0
      */
-    public function get($key = null, $default = null)
+    public function get($key = null)
     {
-        return $default;
+        return null;
     }
 
     /**
