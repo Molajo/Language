@@ -178,6 +178,7 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
         $this->model            = $model;
         $this->language_strings = $language_strings;
         $this->setLanguageMetadata($options);
+        $this->primary_language = $primary_language;
         $this->default_language = $default_language;
         $this->en_gb_instance   = $en_gb_instance;
     }
