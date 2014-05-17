@@ -22,9 +22,8 @@ use stdClass;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter implements LanguageInterface,
-                                                  TranslateInterface,
-                                                  CaptureUntranslatedStringInterface
+class Database extends AbstractAdapter
+    implements LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
 {
     /**
      * Language
@@ -33,22 +32,6 @@ class Database extends AbstractAdapter implements LanguageInterface,
      * @since  1.0.0
      */
     protected $language;
-
-    /**
-     * Extension ID
-     *
-     * @var    int
-     * @since  1.0.0
-     */
-    protected $extension_id;
-
-    /**
-     * Extension Instance ID
-     *
-     * @var    int
-     * @since  1.0.0
-     */
-    protected $extension_instance_id;
 
     /**
      * Title
@@ -163,8 +146,6 @@ class Database extends AbstractAdapter implements LanguageInterface,
     protected $property_array
         = array(
             'language',
-            'extension_id',
-            'extension_instance_id',
             'title',
             'tag',
             'locale',
@@ -183,8 +164,6 @@ class Database extends AbstractAdapter implements LanguageInterface,
      * Constructor
      *
      * @param  string $language
-     * @param  int    $extension_id
-     * @param  int    $extension_instance_id
      * @param  string $title
      * @param  string $tag
      * @param  string $locale
@@ -200,8 +179,6 @@ class Database extends AbstractAdapter implements LanguageInterface,
      */
     public function __construct(
         $language,
-        $extension_id,
-        $extension_instance_id,
         $title,
         $tag,
         $locale,
@@ -214,11 +191,24 @@ class Database extends AbstractAdapter implements LanguageInterface,
         $default_language = null,
         $en_gb_instance = null
     ) {
-        $language_strings = $this->model->getLanguageStrings($language);
+        $this->model = $model;
 
-        foreach ($this->property_array as $key) {
-            $this->$key = $key;
-        }
+        $this->model->getLanguageStrings($language);
+
+        $this->model->setLanguageMetadata(
+            $language,
+            $title,
+            $tag,
+            $locale,
+            $rtl,
+            $direction,
+            $first_day,
+            $language_utc_offset
+        );
+
+        $this->primary_language = $primary_language;
+        $this->default_language = $default_language;
+        $this->en_gb_instance   = $en_gb_instance;
     }
 
     /**
@@ -256,26 +246,6 @@ class Database extends AbstractAdapter implements LanguageInterface,
     }
 
     /**
-     * Get All Language Properties
-     *
-     * @return  object
-     * @since   1.0
-     */
-    public function getAll()
-    {
-        $temp = new stdClass();
-
-        foreach ($this->property_array as $key) {
-            if ($key === 'language_strings') {
-            } else {
-                $temp->$key = $key;
-            }
-        }
-
-        return $temp;
-    }
-
-    /**
      * Translate String
      *
      * @param   string $string
@@ -294,6 +264,21 @@ class Database extends AbstractAdapter implements LanguageInterface,
         if ($this->primary_language === true) {
             return $this->translateStringNotFound($key, $string);
         }
+
+        return $string;
+    }
+
+    /**
+     * Save untranslated strings for localization, for primary language only
+     *
+     * @param   string $string
+     *
+     * @return  string
+     * @since   1.0
+     */
+    public function setString($string)
+    {
+        $this->model->setString($string);
 
         return $string;
     }
@@ -360,17 +345,59 @@ class Database extends AbstractAdapter implements LanguageInterface,
     }
 
     /**
-     * Save untranslated strings for localization, for primary language only
+     * Set Language Metadata
      *
-     * @param   string $string
+     * @param   string $language
+     * @param   string $title
+     * @param   string $tag
+     * @param   string $locale
+     * @param   string $rtl
+     * @param   string $direction
+     * @param   int    $first_day
+     * @param   int    $language_utc_offset
      *
-     * @return  string
+     * @return  $this
      * @since   1.0
      */
-    public function setString($string)
-    {
-        $this->model->setString($string);
+    protected function setLanguageMetadata(
+        $language,
+        $title,
+        $tag,
+        $locale,
+        $rtl,
+        $direction,
+        $first_day,
+        $language_utc_offset
+    ) {
+        $this->language            = $language;
+        $this->title               = $title;
+        $this->tag                 = $tag;
+        $this->locale              = $locale;
+        $this->rtl                 = $rtl;
+        $this->direction           = $direction;
+        $this->first_day           = $first_day;
+        $this->language_utc_offset = $language_utc_offset;
 
-        return $string;
+        return $this;
+    }
+
+    /**
+     * Get All Language Properties
+     *
+     * @return  stdClass
+     * @since   1.0
+     */
+    protected function getAll()
+    {
+        $temp = new stdClass();
+
+        foreach ($this->property_array as $key) {
+            if ($key === 'language_strings') {
+            } else {
+                $temp->$key = $key;
+            }
+        }
+
+        return $temp;
     }
 }
