@@ -173,8 +173,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
     {
         if (in_array($key, $this->property_array)) {
         } else {
-            throw new RuntimeException
-            ('Language Database: Get Key not known: ' . $key);
+            throw new RuntimeException('Language Database: Get Key not known: ' . $key);
         }
 
         if (isset($this->$key)) {
@@ -209,8 +208,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             $data = $this->database->loadObjectList($this->query->getSQL());
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
             );
         }
@@ -292,15 +290,13 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             $data = $this->database->loadObjectList($this->query->getSQL());
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel getLanguageStrings Query Failed: ' . $e->getMessage()
             );
         }
 
         if (count($data) === 0) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'Language DatabaseModel getLanguageStrings: No Language strings for Language.'
             );
         }
@@ -365,8 +361,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             $result = $this->database->loadResult($this->query->getSQL());
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel exists query failed for Language/String: '
                 . $language . '/' . $string . $e->getMessage()
             );
@@ -439,8 +434,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             $this->database->execute($this->query->getSQL());
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel saveLanguageString exists query failed for Language/String: '
                 . $language . '/' . $language_string . $e->getMessage()
             );
@@ -490,8 +484,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             }
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel insertCatalogEntry query failed for Language/String: '
                 . $language_id . '/' . $sef_request . $e->getMessage()
             );
@@ -519,8 +512,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             return $this->database->loadResult($this->query->getSQL());
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel getSEFRequest Query Failed Language string Primary Key: '
                 . $language_id . $e->getMessage()
             );
@@ -545,8 +537,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
             $applications = $this->database->loadObjectList($this->query->getSQL());
 
         } catch (Exception $e) {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'DatabaseModel getApplications Query Failed ' . $e->getMessage()
             );
         }

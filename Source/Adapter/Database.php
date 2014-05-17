@@ -22,8 +22,8 @@ use stdClass;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter
-    implements LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
+class Database extends AbstractAdapter implements
+    LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
 {
     /**
      * Language
@@ -180,7 +180,7 @@ class Database extends AbstractAdapter
      * @since  1.0.0
      */
     public function __construct(
-        $language = 'en-GB',
+        $language,
         $extension_id,
         $extension_instance_id,
         $title,
@@ -244,8 +244,7 @@ class Database extends AbstractAdapter
 
         if (in_array($key, $this->property_array)) {
         } else {
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'Language Database Adapter: Attempting to get value for unknown property: ' . $key
             );
         }
