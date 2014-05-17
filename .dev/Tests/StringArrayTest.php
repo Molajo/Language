@@ -27,6 +27,83 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
     protected $adapter;
 
     /**
+     * @var  array $primary_language_array
+     */
+    protected $primary_language_array
+        = array(
+            'language'            => 'en-GB',
+            'title'               => 'English',
+            'tag'                 => 'en-GB',
+            'locale'              => 'en-GB',
+            'rtl'                 => 'false',
+            'direction'           => 'ltr',
+            'first_day'           => 0,
+            'language_utc_offset' => 0,
+            'primary_language'    => true
+        );
+
+    /**
+     * @var  array $primary_language_strings
+     */
+    protected $primary_language_strings
+        = array(
+            'dog'     => 'Dog',
+            'catbook' => 'The Cat in the Hat',
+            'error'   => 'The error message is thus.',
+            'z'       => 'Zebra',
+            'nothing' => 'Nada thing'
+        );
+
+    /**
+     * @var  array $default_language_array
+     */
+    protected $default_language_array
+        = array(
+            'language'            => 'en-DF',
+            'title'               => 'English DF',
+            'tag'                 => 'en-DF',
+            'locale'              => 'en-DF',
+            'rtl'                 => 'true',
+            'direction'           => 'rtl',
+            'first_day'           => 0,
+            'language_utc_offset' => 0,
+            'primary_language'    => false
+        );
+
+    /**
+     * @var  array $default_language_strings
+     */
+    protected $default_language_strings
+        = array(
+            'abc' => 'The beginning of the alphabet.',
+            'xyz' => 'The end of the alphabet.'
+        );
+
+    /**
+     * @var  array $default_language_array
+     */
+    protected $en_gb_array
+        = array(
+            'language'            => 'en-DF',
+            'title'               => 'English DF',
+            'tag'                 => 'en-DF',
+            'locale'              => 'en-DF',
+            'rtl'                 => 'true',
+            'direction'           => 'rtl',
+            'first_day'           => 0,
+            'language_utc_offset' => 0,
+            'primary_language'    => false
+        );
+
+    /**
+     * @var  array $default_language_strings
+     */
+    protected $en_gb_strings
+        = array(
+            '3' => 'Third'
+        );
+
+    /**
      * Setup
      *
      * @covers  Molajo\Language\Adapter\StringArray::__construct
@@ -34,37 +111,19 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $language = 'en-GB';
-        $title = 'English';
-        $tag = 'en-GB';
-        $locale = 'en-GB';
-        $rtl = 'false';
-        $direction = 'ltr';
-        $first_day = 0;
-        $language_utc_offset = 0;
-        $language_strings = array(
-            'dog' => 'Dog',
-            'catbook' => 'The Cat in the Hat',
-            'error' => 'The error message is thus.',
-            'z' => 'Zebra',
-            'nothing' => 'Nada thing'
-        );
-        $model = new MockModel();
+        $model            = new MockModel();
         $primary_language = true;
         $default_language = null;
-        $en_gb_instance = null;
+        $en_gb_instance   = null;
 
-        $this->adapter = new StringArray($language, $title, $tag,
-            $locale,
-            $rtl,
-            $direction,
-            $first_day,
-            $language_utc_offset,
-            $language_strings,
+        $this->adapter = new StringArray(
+            $this->primary_language_array,
+            $this->primary_language_strings,
             $model,
             $primary_language,
             $default_language,
-            $en_gb_instance);
+            $en_gb_instance
+        );
     }
 
     /**
@@ -107,17 +166,19 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers  Molajo\Language\Adapter\StringArray::get
+     * @covers                   Molajo\Language\Adapter\StringArray::get
      *
      * @expectedException \CommonApi\Exception\RuntimeException
      * @expectedExceptionMessage Language StringArray Adapter: Attempting to get value for unknown property: not_existing
      *
      * @return  $this
-     * @since   1.0
+     * @since                    1.0
      */
     public function testGetNotExisting()
     {
         $results = $this->adapter->get('not_existing');
+
+        $this->assertEquals($results, 'String was set');
 
         return $this;
     }
@@ -168,24 +229,19 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testTranslateStringBackupLanguageFound()
     {
-        $default_instance = new StringArray('en-DF',
-            'Default Language', 'en-DF', 'en-DF', true, 'RTL', 1, 0,
-            array(
-                'abc' => 'The beginning of the alphabet.',
-                'xyz' => 'The end of the alphabet.'
-            ),
-            new MockModel(), false, null, null);
+        $model = new MockModel();
 
-        $current_instance = new StringArray('en-GB',
-            'English Language', 'en-GB', 'en-GB', false, 'LTR', 0, 0,
-            array(
-                'dog' => 'Dog',
-                'catbook' => 'The Cat in the Hat',
-                'error' => 'The error message is thus.',
-                'z' => 'Zebra',
-                'nothing' => 'Nada thing'
-            ),
-            new MockModel(), true, $default_instance, null);
+        $default_instance = new StringArray(
+            $this->default_language_array,
+            $this->default_language_strings,
+            $model, false, null, null
+        );
+
+        $current_instance = new StringArray(
+            $this->primary_language_array,
+            $this->primary_language_strings,
+            $model, true, $default_instance, null
+        );
 
         $results = $current_instance->translateString('xyz');
 
@@ -206,24 +262,19 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testTranslateStringBackupLanguageNotFound()
     {
-        $default_instance = new StringArray('en-DF',
-            'Default Language', 'en-DF', 'en-DF', true, 'RTL', 1, 0,
-            array(
-                'abc' => 'The beginning of the alphabet.',
-                'xyz' => 'The end of the alphabet.'
-            ),
-            new MockModel(), false, null, null);
+        $model = new MockModel();
 
-        $current_instance = new StringArray('en-GB',
-            'English Language', 'en-GB', 'en-GB', false, 'LTR', 0, 0,
-            array(
-                'dog' => 'Dog',
-                'catbook' => 'The Cat in the Hat',
-                'error' => 'The error message is thus.',
-                'z' => 'Zebra',
-                'nothing' => 'Nada thing'
-            ),
-            new MockModel(), true, $default_instance, null);
+        $default_instance = new StringArray(
+            $this->default_language_array,
+            $this->default_language_strings,
+            $model, false, null, null
+        );
+
+        $current_instance = new StringArray(
+            $this->primary_language_array,
+            $this->primary_language_strings,
+            $model, true, $default_instance, null
+        );
 
         $results = $current_instance->translateString('Not found');
 
@@ -244,31 +295,25 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testTranslateStringBaseLanguageFound()
     {
-        $base_instance = new StringArray('en-BS',
-            'Base Language', 'en-BS', 'en-BS', true, 'RTL', 1, 0,
-            array(
-                '3' => 'Third'
-            ),
-            new MockModel(), false, null, null);
+        $model = new MockModel();
 
-        $default_instance = new StringArray('en-DF',
-            'Default Language', 'en-DF', 'en-DF', true, 'RTL', 1, 0,
-            array(
-                'abc' => 'The beginning of the alphabet.',
-                'xyz' => 'The end of the alphabet.'
-            ),
-            new MockModel(), false, null, null);
+        $base_instance = new StringArray(
+            $this->en_gb_array,
+            $this->en_gb_strings,
+            $model, false, null, null
+        );
 
-        $current_instance = new StringArray('en-GB',
-            'English Language', 'en-GB', 'en-GB', false, 'LTR', 0, 0,
-            array(
-                'dog' => 'Dog',
-                'catbook' => 'The Cat in the Hat',
-                'error' => 'The error message is thus.',
-                'z' => 'Zebra',
-                'nothing' => 'Nada thing'
-            ),
-            new MockModel(), true, $default_instance, $base_instance);
+        $default_instance = new StringArray(
+            $this->default_language_array,
+            $this->default_language_strings,
+            $model, false, null, null
+        );
+
+        $current_instance = new StringArray(
+            $this->primary_language_array,
+            $this->primary_language_strings,
+            $model, true, $default_instance, $base_instance
+        );
 
         $results = $current_instance->translateString('3');
 
@@ -289,23 +334,25 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testTranslateStringBaseLanguageNotFound()
     {
-        $default_instance = new StringArray('en-DF',
-            'Default Language', 'en-DF', 'en-DF', true, 'RTL', 1, 0,
-            array(
-                '3' => 'Third'
-            ),
-            new MockModel(), false, null, null);
+        $model = new MockModel();
 
-        $current_instance = new StringArray('en-GB',
-            'English Language', 'en-GB', 'en-GB', false, 'LTR', 0, 0,
-            array(
-                'dog' => 'Dog',
-                'catbook' => 'The Cat in the Hat',
-                'error' => 'The error message is thus.',
-                'z' => 'Zebra',
-                'nothing' => 'Nada thing'
-            ),
-            new MockModel(), true, $default_instance, null);
+        $base_instance = new StringArray(
+            $this->en_gb_array,
+            $this->en_gb_strings,
+            $model, false, null, null
+        );
+
+        $default_instance = new StringArray(
+            $this->default_language_array,
+            $this->default_language_strings,
+            $model, false, null, null
+        );
+
+        $current_instance = new StringArray(
+            $this->primary_language_array,
+            $this->primary_language_strings,
+            $model, true, $default_instance, $base_instance
+        );
 
         $results = $current_instance->translateString('Not found');
 

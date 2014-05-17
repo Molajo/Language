@@ -158,14 +158,7 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
     /**
      * Constructor
      *
-     * @param  string                             $language
-     * @param  string                             $title
-     * @param  string                             $tag
-     * @param  string                             $locale
-     * @param  string                             $rtl
-     * @param  string                             $direction
-     * @param  int                                $first_day
-     * @param  int                                $language_utc_offset
+     * @param  array                              $options
      * @param  array                              $language_strings
      * @param  CaptureUntranslatedStringInterface $model
      * @param  boolean                            $primary_language
@@ -175,36 +168,16 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      * @since  1.0.0
      */
     public function __construct(
-        $language,
-        $title,
-        $tag,
-        $locale,
-        $rtl,
-        $direction,
-        $first_day,
-        $language_utc_offset,
+        array $options,
         array $language_strings,
         CaptureUntranslatedStringInterface $model,
         $primary_language = true,
         LanguageInterface $default_language = null,
         LanguageInterface $en_gb_instance = null
     ) {
-        $this->model = $model;
-
+        $this->model            = $model;
         $this->language_strings = $language_strings;
-
-        $this->setLanguageMetadata(
-            $language,
-            $title,
-            $tag,
-            $locale,
-            $rtl,
-            $direction,
-            $first_day,
-            $language_utc_offset,
-            $primary_language
-        );
-
+        $this->setLanguageMetadata($options);
         $this->default_language = $default_language;
         $this->en_gb_instance   = $en_gb_instance;
     }
@@ -337,39 +310,22 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
     /**
      * Set Language Metadata
      *
-     * @param   string  $language
-     * @param   string  $title
-     * @param   string  $tag
-     * @param   string  $locale
-     * @param   string  $rtl
-     * @param   string  $direction
-     * @param   int     $first_day
-     * @param   int     $language_utc_offset
-     * @param   boolean $primary_language
+     * @param   array   $options
      *
      * @return  $this
      * @since   1.0
      */
-    protected function setLanguageMetadata(
-        $language,
-        $title,
-        $tag,
-        $locale,
-        $rtl,
-        $direction,
-        $first_day,
-        $language_utc_offset,
-        $primary_language
-    ) {
-        $this->language            = $language;
-        $this->title               = $title;
-        $this->tag                 = $tag;
-        $this->locale              = $locale;
-        $this->rtl                 = $rtl;
-        $this->direction           = $direction;
-        $this->first_day           = $first_day;
-        $this->language_utc_offset = $language_utc_offset;
-        $this->primary_language    = $primary_language;
+    protected function setLanguageMetadata(array $options = array())
+    {
+        $this->language            = $options['language'];
+        $this->title               = $options['title'];
+        $this->tag                 = $options['tag'];
+        $this->locale              = $options['locale'];
+        $this->rtl                 = $options['rtl'];
+        $this->direction           = $options['direction'];
+        $this->first_day           = $options['first_day'];
+        $this->language_utc_offset = $options['language_utc_offset'];
+        $this->primary_language    = $options['primary_language'];
 
         return $this;
     }

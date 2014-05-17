@@ -23,7 +23,7 @@ use Molajo\Language\Driver;
 class DriverTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var  $Driver
+     * @var  $driver
      */
     protected $driver;
 
