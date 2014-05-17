@@ -81,7 +81,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers  Molajo\Language\Adapter\Database::translateString
+     * @covers  Molajo\Language\Adapter\Database::get
+     * @covers  Molajo\Language\Adapter\Database::getAll
      *
      * @return  $this
      * @since   1.0
@@ -138,6 +139,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\Database::translateString
      * @covers  Molajo\Language\Adapter\Database::translateStringNotFound
      * @covers  Molajo\Language\Adapter\Database::searchBackupLanguages
+     * @covers  Molajo\Language\Adapter\Database::searchBackupLanguage
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @return  $this
@@ -153,12 +155,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers  Molajo\Language\Adapter\Database::__construct
-     * @covers  Molajo\Language\Adapter\Database::setLanguageMetadata
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getLanguageStrings
      * @covers  Molajo\Language\Adapter\Database::translateString
      * @covers  Molajo\Language\Adapter\Database::translateStringNotFound
      * @covers  Molajo\Language\Adapter\Database::searchBackupLanguages
+     * @covers  Molajo\Language\Adapter\Database::searchBackupLanguage
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @return  $this
@@ -200,12 +200,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers  Molajo\Language\Adapter\Database::__construct
-     * @covers  Molajo\Language\Adapter\Database::setLanguageMetadata
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getLanguageStrings
      * @covers  Molajo\Language\Adapter\Database::translateString
      * @covers  Molajo\Language\Adapter\Database::translateStringNotFound
      * @covers  Molajo\Language\Adapter\Database::searchBackupLanguages
+     * @covers  Molajo\Language\Adapter\Database::searchBackupLanguage
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @return  $this
@@ -247,12 +245,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers  Molajo\Language\Adapter\Database::__construct
-     * @covers  Molajo\Language\Adapter\Database::setLanguageMetadata
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getLanguageStrings
      * @covers  Molajo\Language\Adapter\Database::translateString
      * @covers  Molajo\Language\Adapter\Database::translateStringNotFound
      * @covers  Molajo\Language\Adapter\Database::searchBackupLanguages
+     * @covers  Molajo\Language\Adapter\Database::searchBackupLanguage
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @return  $this
@@ -294,12 +290,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers  Molajo\Language\Adapter\Database::__construct
-     * @covers  Molajo\Language\Adapter\Database::setLanguageMetadata
-     * @covers  Molajo\Language\Adapter\DatabaseModel::getLanguageStrings
      * @covers  Molajo\Language\Adapter\Database::translateString
      * @covers  Molajo\Language\Adapter\Database::translateStringNotFound
      * @covers  Molajo\Language\Adapter\Database::searchBackupLanguages
+     * @covers  Molajo\Language\Adapter\Database::searchBackupLanguage
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @return  $this

@@ -25,16 +25,14 @@ abstract class AbstractAdapter implements LanguageInterface, TranslateInterface
     /**
      * Get Language Properties
      *
-     * Specify null for key to have all language properties for current language
-     * returned aas an object
+     * Specify null for key to have all language properties for current language returned as object
      *
      * @param   null|string $key
-     * @param   null|string $default
      *
      * @return  int  $this
-     * @since   1.0.0
+     * @since   1.0
      */
-    abstract public function get($key = null, $default = null);
+    abstract public function get($key = null);
 
     /**
      * Translate String

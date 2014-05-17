@@ -212,12 +212,11 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
      * Specify null for key to have all language properties for current language returned as object
      *
      * @param   null|string $key
-     * @param   null|string $default
      *
-     * @return  mixed
+     * @return  int  $this
      * @since   1.0
      */
-    public function get($key = null, $default = null)
+    public function get($key = null)
     {
         if ($key === null) {
             return $this->getAll();
@@ -230,10 +229,6 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
             throw new RuntimeException(
                 'Language Database Adapter: Attempting to get value for unknown property: ' . $key
             );
-        }
-
-        if ($this->$key === null) {
-            $this->$key = $default;
         }
 
         return $this->$key;
