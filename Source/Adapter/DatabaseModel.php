@@ -26,6 +26,14 @@ use CommonApi\Query\QueryInterface;
 class DatabaseModel implements CaptureUntranslatedStringInterface
 {
     /**
+     * Application ID
+     *
+     * @var    int
+     * @since  1.0.0
+     */
+    protected $application_id = 2;
+
+    /**
      * Public View Group ID
      *
      * @var    int

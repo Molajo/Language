@@ -22,8 +22,9 @@ use stdClass;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter implements
-    LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
+class Database extends AbstractAdapter implements LanguageInterface,
+                                                  TranslateInterface,
+                                                  CaptureUntranslatedStringInterface
 {
     /**
      * Language
@@ -140,7 +141,7 @@ class Database extends AbstractAdapter implements
     /**
      * List of Properties
      *
-     * @var    object
+     * @var    array
      * @since  1.0.0
      */
     protected $property_array = array(
@@ -259,7 +260,7 @@ class Database extends AbstractAdapter implements
     /**
      * Translate String
      *
-     * @param   $string
+     * @param   string|array $string
      *
      * @return  string
      * @since   1.0
@@ -271,13 +272,13 @@ class Database extends AbstractAdapter implements
             $found = array();
 
             foreach ($string as $item) {
-                $found[$item] = $this->search ($string);
+                $found[$item] = $this->search($string);
             }
 
             return $found;
         }
 
-        return $this->search ($string);
+        return $this->search($string);
     }
 
     /**

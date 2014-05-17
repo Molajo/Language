@@ -20,8 +20,9 @@ use CommonApi\Language\TranslateInterface;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-abstract class AbstractAdapter implements
-    CaptureUntranslatedStringInterface, LanguageInterface, TranslateInterface
+abstract class AbstractAdapter implements CaptureUntranslatedStringInterface,
+                                          LanguageInterface,
+                                          TranslateInterface
 {
     /**
      * Get Language Properties
@@ -55,5 +56,5 @@ abstract class AbstractAdapter implements
      * @return  $this
      * @since   1.0.0
      */
-    abstract function setString($string);
+    abstract public function setString($string);
 }
