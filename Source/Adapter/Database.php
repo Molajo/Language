@@ -8,7 +8,6 @@
  */
 namespace Molajo\Language\Adapter;
 
-use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
 use CommonApi\Language\TranslateInterface;
 use CommonApi\Exception\RuntimeException;
@@ -22,8 +21,7 @@ use stdClass;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class Database extends AbstractAdapter
-    implements LanguageInterface, TranslateInterface, CaptureUntranslatedStringInterface
+class Database extends AbstractAdapter implements LanguageInterface, TranslateInterface
 {
     /**
      * Language
@@ -269,21 +267,6 @@ class Database extends AbstractAdapter
     }
 
     /**
-     * Save untranslated strings for localization, for primary language only
-     *
-     * @param   string $string
-     *
-     * @return  string
-     * @since   1.0
-     */
-    public function setString($string)
-    {
-        $this->model->setString($string);
-
-        return $string;
-    }
-
-    /**
      * Search language for string
      *
      * @param   string $key
@@ -342,6 +325,21 @@ class Database extends AbstractAdapter
         }
 
         return $key;
+    }
+
+    /**
+     * Save untranslated strings for localization, for primary language only
+     *
+     * @param   string $string
+     *
+     * @return  string
+     * @since   1.0
+     */
+    protected function setString($string)
+    {
+        $this->model->setString($string);
+
+        return $string;
     }
 
     /**
