@@ -23,8 +23,8 @@ use stdClass;
  * @since      1.0.0
  */
 class Database extends AbstractAdapter implements LanguageInterface,
- TranslateInterface,
- CaptureUntranslatedStringInterface
+                                                  TranslateInterface,
+                                                  CaptureUntranslatedStringInterface
 {
     /**
      * Language
@@ -139,6 +139,22 @@ class Database extends AbstractAdapter implements LanguageInterface,
     protected $en_gb_instance;
 
     /**
+     * Primary Language
+     *
+     * @var    boolean
+     * @since  1.0.0
+     */
+    protected $primary_language = true;
+
+    /**
+     * Backup language instances
+     *
+     * @var    array
+     * @since  1.0.0
+     */
+    protected $language_instances = array('default_language', 'en_gb_instance');
+
+    /**
      * List of Properties
      *
      * @var    array
@@ -158,6 +174,7 @@ class Database extends AbstractAdapter implements LanguageInterface,
             'language_utc_offset',
             'language_strings',
             'model',
+            'primary_language',
             'default_language',
             'en_gb_instance'
         );
@@ -193,24 +210,15 @@ class Database extends AbstractAdapter implements LanguageInterface,
         $first_day,
         $language_utc_offset,
         $model,
+        $primary_language = true,
         $default_language = null,
         $en_gb_instance = null
     ) {
-        $this->language              = $language;
-        $this->extension_id          = $extension_id;
-        $this->extension_instance_id = $extension_instance_id;
-        $this->title                 = $title;
-        $this->tag                   = $tag;
-        $this->locale                = $locale;
-        $this->rtl                   = $rtl;
-        $this->direction             = $direction;
-        $this->first_day             = $first_day;
-        $this->language_utc_offset   = $language_utc_offset;
-        $this->model                 = $model;
-        $this->default_language      = $default_language;
-        $this->en_gb_instance        = $en_gb_instance;
+        $language_strings = $this->model->getLanguageStrings($language);
 
-        $this->language_strings = $this->model->getLanguageStrings($this->language);
+        foreach ($this->property_array as $key) {
+            $this->$key = $key;
+        }
     }
 
     /**
@@ -222,24 +230,13 @@ class Database extends AbstractAdapter implements LanguageInterface,
      * @param   null|string $key
      * @param   null|string $default
      *
-     * @return  int  $this
+     * @return  mixed
      * @since   1.0
      */
     public function get($key = null, $default = null)
     {
         if ($key === null) {
-            $temp                        = new stdClass();
-            $temp->extension_id          = $this->extension_id;
-            $temp->extension_instance_id = $this->extension_instance_id;
-            $temp->title                 = $this->title;
-            $temp->tag                   = $this->tag;
-            $temp->locale                = $this->locale;
-            $temp->rtl                   = $this->rtl;
-            $temp->direction             = $this->direction;
-            $temp->first_day             = $this->first_day;
-            $temp->language_utc_offset   = $this->language_utc_offset;
-
-            return $temp;
+            return $this->getAll();
         }
 
         $key = strtolower($key);
@@ -259,6 +256,26 @@ class Database extends AbstractAdapter implements LanguageInterface,
     }
 
     /**
+     * Get All Language Properties
+     *
+     * @return  object
+     * @since   1.0
+     */
+    public function getAll()
+    {
+        $temp = new stdClass();
+
+        foreach ($this->property_array as $key) {
+            if ($key === 'language_strings') {
+            } else {
+                $temp->$key = $key;
+            }
+        }
+
+        return $temp;
+    }
+
+    /**
      * Translate String
      *
      * @param   string $string
@@ -270,59 +287,52 @@ class Database extends AbstractAdapter implements LanguageInterface,
     {
         $key = strtolower($string);
 
-        if (isset($this->language_strings[ $key ])) {
-            return $this->language_strings[ $key ];
+        if (isset($this->language_strings[$key])) {
+            return $this->language_strings[$key];
         }
 
-        $results = $this->translateDefaultLanguage($key);
-
-        if ($results === $key) {
-            $results = $this->translateEngbInstance($key);
+        if ($this->primary_language === true) {
+            return $this->translateStringNotFound($key, $string);
         }
 
+        return $string;
+    }
+
+    /**
+     * Search language for string
+     *
+     * @param   string $key
+     * @param   string $string
+     *
+     * @return  string
+     * @since   1.0.0
+     */
+    protected function translateStringNotFound($key, $string)
+    {
+        $results = $this->getBackupLanguage($key);
+
         if ($results === $key) {
-            $results = $this->setString($key);
+            return $this->setString($string);
         }
 
         return $results;
     }
 
     /**
-     * Check default language
+     * Search other languages for string, for primary language only
      *
      * @param   string $key
      *
      * @return  string
      * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function translateDefaultLanguage($key)
+    protected function getBackupLanguage($key)
     {
-        if (is_object($this->default_language)) {
-            $result = $this->default_language->translate($key);
-            if ($result == $key) {
-            } else {
-                return $result;
-            }
-        }
+        foreach ($this->language_instances as $language) {
 
-        return false;
-    }
+            $result = $this->translateStringLanguage($key, $language);
 
-    /**
-     * Check en-GB instance
-     *
-     * @param   string $key
-     *
-     * @return  string
-     * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
-     */
-    protected function translateEngbInstance($key)
-    {
-        if (is_object($this->en_gb_instance)) {
-            $result = $this->en_gb_instance->translate($key);
-            if ($result == $key) {
+            if ($result === $key) {
             } else {
                 return $result;
             }
@@ -332,7 +342,25 @@ class Database extends AbstractAdapter implements LanguageInterface,
     }
 
     /**
-     * Save untranslated strings for localization
+     * Search another language for string, for primary language only
+     *
+     * @param   string $key
+     * @param   string $language
+     *
+     * @return  string
+     * @since   1.0.0
+     */
+    protected function translateStringLanguage($key, $language)
+    {
+        if (is_object($this->$language)) {
+            return $this->$language->translateString($key);
+        }
+
+        return $key;
+    }
+
+    /**
+     * Save untranslated strings for localization, for primary language only
      *
      * @param   string $string
      *
