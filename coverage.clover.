@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1400342085">
-  <project timestamp="1400342085">
+<coverage generated="1400343815">
+  <project timestamp="1400343815">
     <file name="/Users/amystephen/Sites/Molajo/Language/.dev/Bootstrap.php">
       <line num="24" type="stmt" count="0"/>
       <line num="25" type="stmt" count="0"/>
@@ -35,93 +35,83 @@
       <metrics loc="46" ncloc="39" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="0" elements="23" coveredelements="0"/>
     </file>
     <package name="Molajo\Language\Adapter">
-      <file name="/Users/amystephen/Sites/Molajo/Language/Source/Adapter/AbstractAdapter.php">
-        <class name="AbstractAdapter" namespace="Molajo\Language\Adapter">
-          <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="2" coveredelements="0"/>
-        </class>
-        <line num="37" type="method" name="get" crap="1" count="0"/>
-        <line num="47" type="method" name="translateString" crap="1" count="0"/>
-        <line num="49" type="stmt" count="0"/>
-        <metrics loc="48" ncloc="13" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
-      </file>
       <file name="/Users/amystephen/Sites/Molajo/Language/Source/Adapter/Database.php">
         <class name="Database" namespace="Molajo\Language\Adapter">
-          <metrics methods="9" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="37" elements="72" coveredelements="41"/>
+          <metrics methods="9" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="62" coveredstatements="50" elements="71" coveredelements="57"/>
         </class>
-        <line num="175" type="method" name="__construct" crap="1" count="2"/>
-        <line num="189" type="stmt" count="2"/>
-        <line num="191" type="stmt" count="2"/>
-        <line num="193" type="stmt" count="2"/>
-        <line num="194" type="stmt" count="2"/>
-        <line num="195" type="stmt" count="2"/>
-        <line num="196" type="stmt" count="2"/>
-        <line num="197" type="stmt" count="2"/>
-        <line num="198" type="stmt" count="2"/>
-        <line num="199" type="stmt" count="2"/>
-        <line num="200" type="stmt" count="2"/>
-        <line num="201" type="stmt" count="2"/>
-        <line num="203" type="stmt" count="2"/>
-        <line num="205" type="stmt" count="2"/>
-        <line num="206" type="stmt" count="2"/>
-        <line num="207" type="stmt" count="2"/>
-        <line num="220" type="method" name="get" crap="4.77" count="2"/>
+        <line num="175" type="method" name="__construct" crap="1" count="9"/>
+        <line num="189" type="stmt" count="9"/>
+        <line num="191" type="stmt" count="9"/>
+        <line num="193" type="stmt" count="9"/>
+        <line num="194" type="stmt" count="9"/>
+        <line num="195" type="stmt" count="9"/>
+        <line num="196" type="stmt" count="9"/>
+        <line num="197" type="stmt" count="9"/>
+        <line num="198" type="stmt" count="9"/>
+        <line num="199" type="stmt" count="9"/>
+        <line num="200" type="stmt" count="9"/>
+        <line num="201" type="stmt" count="9"/>
+        <line num="203" type="stmt" count="9"/>
+        <line num="205" type="stmt" count="9"/>
+        <line num="206" type="stmt" count="9"/>
+        <line num="207" type="stmt" count="9"/>
+        <line num="220" type="method" name="get" crap="4.32" count="2"/>
         <line num="222" type="stmt" count="2"/>
-        <line num="223" type="stmt" count="1"/>
-        <line num="226" type="stmt" count="1"/>
-        <line num="228" type="stmt" count="1"/>
+        <line num="223" type="stmt" count="0"/>
+        <line num="226" type="stmt" count="2"/>
+        <line num="228" type="stmt" count="2"/>
         <line num="229" type="stmt" count="1"/>
-        <line num="230" type="stmt" count="0"/>
-        <line num="232" type="stmt" count="0"/>
+        <line num="230" type="stmt" count="1"/>
+        <line num="232" type="stmt" count="1"/>
         <line num="235" type="stmt" count="1"/>
         <line num="236" type="stmt" count="0"/>
         <line num="237" type="stmt" count="0"/>
         <line num="239" type="stmt" count="1"/>
-        <line num="250" type="method" name="translateString" crap="12" count="0"/>
-        <line num="252" type="stmt" count="0"/>
-        <line num="254" type="stmt" count="0"/>
-        <line num="255" type="stmt" count="0"/>
-        <line num="258" type="stmt" count="0"/>
-        <line num="259" type="stmt" count="0"/>
+        <line num="250" type="method" name="translateString" crap="3.04" count="6"/>
+        <line num="252" type="stmt" count="6"/>
+        <line num="254" type="stmt" count="6"/>
+        <line num="255" type="stmt" count="1"/>
+        <line num="258" type="stmt" count="5"/>
+        <line num="259" type="stmt" count="5"/>
         <line num="262" type="stmt" count="0"/>
-        <line num="274" type="method" name="translateStringNotFound" crap="6" count="0"/>
-        <line num="276" type="stmt" count="0"/>
-        <line num="278" type="stmt" count="0"/>
-        <line num="279" type="stmt" count="0"/>
-        <line num="282" type="stmt" count="0"/>
-        <line num="293" type="method" name="searchBackupLanguages" crap="12" count="0"/>
-        <line num="295" type="stmt" count="0"/>
-        <line num="297" type="stmt" count="0"/>
-        <line num="299" type="stmt" count="0"/>
-        <line num="300" type="stmt" count="0"/>
-        <line num="301" type="stmt" count="0"/>
-        <line num="303" type="stmt" count="0"/>
-        <line num="305" type="stmt" count="0"/>
+        <line num="274" type="method" name="translateStringNotFound" crap="2" count="5"/>
+        <line num="276" type="stmt" count="5"/>
+        <line num="278" type="stmt" count="5"/>
+        <line num="279" type="stmt" count="3"/>
+        <line num="282" type="stmt" count="2"/>
+        <line num="293" type="method" name="searchBackupLanguages" crap="3" count="5"/>
+        <line num="295" type="stmt" count="5"/>
+        <line num="297" type="stmt" count="5"/>
+        <line num="299" type="stmt" count="5"/>
+        <line num="300" type="stmt" count="4"/>
+        <line num="301" type="stmt" count="2"/>
+        <line num="303" type="stmt" count="4"/>
+        <line num="305" type="stmt" count="3"/>
         <line num="317" type="method" name="searchBackupLanguage" crap="6" count="0"/>
         <line num="319" type="stmt" count="0"/>
         <line num="320" type="stmt" count="0"/>
         <line num="323" type="stmt" count="0"/>
-        <line num="334" type="method" name="setString" crap="2" count="0"/>
-        <line num="336" type="stmt" count="0"/>
-        <line num="338" type="stmt" count="0"/>
-        <line num="356" type="method" name="setLanguageMetadata" crap="1" count="2"/>
-        <line num="367" type="stmt" count="2"/>
-        <line num="368" type="stmt" count="2"/>
-        <line num="369" type="stmt" count="2"/>
-        <line num="370" type="stmt" count="2"/>
-        <line num="371" type="stmt" count="2"/>
-        <line num="372" type="stmt" count="2"/>
-        <line num="373" type="stmt" count="2"/>
-        <line num="374" type="stmt" count="2"/>
-        <line num="375" type="stmt" count="2"/>
-        <line num="377" type="stmt" count="2"/>
-        <line num="386" type="method" name="getAll" crap="2" count="1"/>
-        <line num="388" type="stmt" count="1"/>
-        <line num="390" type="stmt" count="1"/>
-        <line num="391" type="stmt" count="1"/>
-        <line num="392" type="stmt" count="1"/>
-        <line num="394" type="stmt" count="1"/>
-        <line num="397" type="stmt" count="0"/>
-        <metrics loc="396" ncloc="200" classes="1" methods="9" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="37" elements="72" coveredelements="40"/>
+        <line num="334" type="method" name="setString" crap="1" count="3"/>
+        <line num="336" type="stmt" count="3"/>
+        <line num="354" type="method" name="setLanguageMetadata" crap="1" count="9"/>
+        <line num="365" type="stmt" count="9"/>
+        <line num="366" type="stmt" count="9"/>
+        <line num="367" type="stmt" count="9"/>
+        <line num="368" type="stmt" count="9"/>
+        <line num="369" type="stmt" count="9"/>
+        <line num="370" type="stmt" count="9"/>
+        <line num="371" type="stmt" count="9"/>
+        <line num="372" type="stmt" count="9"/>
+        <line num="373" type="stmt" count="9"/>
+        <line num="375" type="stmt" count="9"/>
+        <line num="384" type="method" name="getAll" crap="6" count="0"/>
+        <line num="386" type="stmt" count="0"/>
+        <line num="388" type="stmt" count="0"/>
+        <line num="389" type="stmt" count="0"/>
+        <line num="390" type="stmt" count="0"/>
+        <line num="392" type="stmt" count="0"/>
+        <line num="395" type="stmt" count="0"/>
+        <metrics loc="394" ncloc="198" classes="1" methods="9" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="62" coveredstatements="50" elements="71" coveredelements="55"/>
       </file>
       <file name="/Users/amystephen/Sites/Molajo/Language/Source/Adapter/DatabaseModel.php">
         <class name="DatabaseModel" namespace="Molajo\Language\Adapter" fullPackage="Molajo" package="Molajo">
@@ -362,6 +352,24 @@
         <metrics loc="89" ncloc="30" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
       </file>
     </package>
+    <file name="/Users/amystephen/Sites/Molajo/Language/vendor/commonapi/exception/ExceptionInterface.php">
+      <line num="23" type="stmt" count="0"/>
+      <metrics loc="22" ncloc="7" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="CommonApi\Exception">
+      <file name="/Users/amystephen/Sites/Molajo/Language/vendor/commonapi/exception/RuntimeException.php">
+        <class name="RuntimeException" namespace="CommonApi\Exception" fullPackage="Exception" package="Exception">
+          <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
+        </class>
+        <line num="34" type="method" name="__construct" crap="2" count="0"/>
+        <line num="36" type="stmt" count="0"/>
+        <line num="37" type="stmt" count="0"/>
+        <line num="45" type="method" name="__toString" crap="2" count="0"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="50" type="stmt" count="0"/>
+        <metrics loc="49" ncloc="18" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
+      </file>
+    </package>
     <package name="Composer\Autoload">
       <file name="/Users/amystephen/Sites/Molajo/Language/vendor/composer/ClassLoader.php">
         <class name="ClassLoader" namespace="Composer\Autoload">
@@ -560,6 +568,6 @@
       <line num="53" type="stmt" count="0"/>
       <metrics loc="53" ncloc="51" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="27" coveredstatements="0" elements="29" coveredelements="0"/>
     </file>
-    <metrics files="8" loc="1597" ncloc="969" classes="6" methods="41" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="465" coveredstatements="62" elements="506" coveredelements="68"/>
+    <metrics files="9" loc="1618" ncloc="979" classes="6" methods="43" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="467" coveredstatements="75" elements="510" coveredelements="83"/>
   </project>
 </coverage>
