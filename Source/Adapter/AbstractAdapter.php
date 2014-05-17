@@ -8,7 +8,6 @@
  */
 namespace Molajo\Language\Adapter;
 
-use CommonApi\Language\CaptureUntranslatedStringInterface;
 use CommonApi\Language\LanguageInterface;
 use CommonApi\Language\TranslateInterface;
 

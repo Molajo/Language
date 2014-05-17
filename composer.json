@@ -20,6 +20,9 @@
         "commonapi/database": "dev-master",
         "commonapi/query": "dev-master"
     },
+    "recommend": {
+        "molajo/query": "dev-master"
+    },
     "support": {
         "event": "hello@molajo.org",
         "irc": "irc://irc.freenode.org/molajo"

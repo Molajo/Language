@@ -314,18 +314,8 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
         $default_language = new MockBackupLanguage();
         $en_gb_instance = new MockBackupLanguage2();
 
-        $two_language_adapter = new Database($language,
-            $title,
-            $tag,
-            $locale,
-            $rtl,
-            $direction,
-            $first_day,
-            $language_utc_offset,
-            $model,
-            $primary_language,
-            $default_language,
-            $en_gb_instance);
+        $two_language_adapter = new Database($language, $title, $tag, $locale, $rtl, $direction,
+            $first_day, $language_utc_offset, $model, $primary_language, $default_language, $en_gb_instance);
 
         $results = $two_language_adapter->translateString('This is not in any of the three.');
 

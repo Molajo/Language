@@ -158,17 +158,18 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
     /**
      * Constructor
      *
-     * @param  string                              $language
-     * @param  string                              $title
-     * @param  string                              $tag
-     * @param  string                              $locale
-     * @param  string                              $rtl
-     * @param  string                              $direction
-     * @param  int                                 $first_day
-     * @param  int                                 $language_utc_offset
-     * @param  CaptureUntranslatedStringInterface  $model
-     * @param  LanguageInterface                   $default_language
-     * @param  LanguageInterface                   $en_gb_instance
+     * @param  string                             $language
+     * @param  string                             $title
+     * @param  string                             $tag
+     * @param  string                             $locale
+     * @param  string                             $rtl
+     * @param  string                             $direction
+     * @param  int                                $first_day
+     * @param  int                                $language_utc_offset
+     * @param  CaptureUntranslatedStringInterface $model
+     * @param  boolean                            $primary_language
+     * @param  LanguageInterface                  $default_language
+     * @param  LanguageInterface                  $en_gb_instance
      *
      * @since  1.0.0
      */
@@ -334,14 +335,15 @@ class Database extends AbstractAdapter implements LanguageInterface, TranslateIn
     /**
      * Set Language Metadata
      *
-     * @param   string $language
-     * @param   string $title
-     * @param   string $tag
-     * @param   string $locale
-     * @param   string $rtl
-     * @param   string $direction
-     * @param   int    $first_day
-     * @param   int    $language_utc_offset
+     * @param   string  $language
+     * @param   string  $title
+     * @param   string  $tag
+     * @param   string  $locale
+     * @param   string  $rtl
+     * @param   string  $direction
+     * @param   int     $first_day
+     * @param   int     $language_utc_offset
+     * @param   boolean $primary_language
      *
      * @return  $this
      * @since   1.0

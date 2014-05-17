@@ -119,16 +119,17 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
      * @var    array
      * @since  1.0.0
      */
-    protected $property_array = array(
-        'application_id',
-        'database',
-        'query',
-        'null_date',
-        'current_date',
-        'model_registry',
-        'installed_languages',
-        'tag_array'
-    );
+    protected $property_array
+        = array(
+            'application_id',
+            'database',
+            'query',
+            'null_date',
+            'current_date',
+            'model_registry',
+            'installed_languages',
+            'tag_array'
+        );
 
     /**
      * Construct
@@ -163,114 +164,21 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
         $this->public_view_group_id = (int)$public_view_group_id;
         $this->primary_category_id  = (int)$primary_category_id;
 
-        $this->setInstalledLanguages();
         $this->getApplications();
     }
 
     /**
-     * Get the current value (or default) of the specified key
+     * Get Primary Language Language Strings
      *
-     * @param   string $key
-     * @param   null   $default
+     * @param   string $language
      *
-     * @return  mixed
+     * @return  array
      * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function get($key, $default = null)
+    public function getInstalledLanguages()
     {
-        if (in_array($key, $this->property_array)) {
-        } else {
-            throw new RuntimeException('Language Database: Get Key not known: ' . $key);
-        }
-
-        if (isset($this->$key)) {
-            return $this->$key;
-        }
-
-        $this->$key = $default;
-
-        return $this->$key;
-    }
-
-    /**
-     * Retrieve installed languages for this application
-     *
-     * @return  $this
-     * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
-     */
-    protected function setInstalledLanguages()
-    {
-        $data_parameters     = new stdClass();
-        $registry_parameters = $this->model_registry['parameters'];
-
-        try {
-            $this->query->clearQuery();
-
-            $this->query->select('*');
-            $this->query->from('#__extension_instances');
-            $this->query->where('column', 'catalog_type_id', '=', 'integer', (int)6000);
-            $this->query->where('column', 'catalog_type_id', '<>', 'column', 'extension_id');
-
-            $data = $this->database->loadObjectList($this->query->getSQL());
-
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
-            );
-        }
-
-        foreach ($data as $language) {
-
-            $temp_row                        = new stdClass();
-            $temp_row->extension_id          = (int)$language->extension_id;
-            $temp_row->extension_instance_id = (int)$language->id;
-            $temp_row->title                 = $language->subtitle;
-            $temp_row->tag                   = $language->title;
-            $temp_parameters                 = json_decode($language->parameters);
-
-            if (count($temp_parameters) > 0
-                && (int)$this->application_id > 0
-            ) {
-                foreach ($temp_parameters as $key => $value) {
-                    if ($key == (int)$this->application_id) {
-                        $data_parameters = $value;
-                        break;
-                    }
-                }
-            }
-
-            foreach ($registry_parameters as $parameters) {
-
-                $key = $parameters['name'];
-
-                if (isset($parameters['default'])) {
-                    $default = $parameters['default'];
-                } else {
-                    $default = false;
-                }
-
-                if (isset($data_parameters->$key)) {
-                    $value = $data_parameters->$key;
-                } else {
-                    $value = null;
-                }
-
-                if ($value === null) {
-                    $value = $default;
-                }
-
-                $temp_row->$key = $value;
-            }
-
-            $temp_row->language_utc_offset = null;
-
-            $this->installed_languages[$temp_row->tag] = $temp_row;
-            $this->tag_array[]                         = $temp_row->tag;
-        }
-
-        return $this;
+        return $this->getInstalledLanguages2();
     }
 
     /**
@@ -528,7 +436,109 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
     }
 
     /**
-     * Determine if the language string exists for the language
+     * Retrieve installed languages for this application
+     *
+     * @return  $this
+     * @since   1.0.0
+     * @throws  \CommonApi\Exception\RuntimeException
+     */
+    protected function getInstalledLanguages2()
+    {
+        $registry_parameters = $this->model_registry['parameters'];
+
+        $data = $this->getLanguageExtensionInstances();
+
+        foreach ($data as $language) {
+            $this->processInstalledLanguageRow($data, $registry_parameters);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get Extension Instances for Language
+     *
+     * @return  object
+     * @since   1.0
+     */
+    protected function getLanguageExtensionInstances()
+    {
+        try {
+            $this->query->clearQuery();
+
+            $this->query->select('*');
+            $this->query->from('#__extension_instances');
+            $this->query->where('column', 'catalog_type_id', '=', 'integer', (int)6000);
+            $this->query->where('column', 'catalog_type_id', '<>', 'column', 'extension_id');
+
+            $data = $this->database->loadObjectList($this->query->getSQL());
+
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
+            );
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $language
+     * @param $registry_parameters
+     */
+    protected function processInstalledLanguageRow($language, $registry_parameters)
+    {
+        $data_parameters     = new stdClass();
+
+        $temp_row                        = new stdClass();
+        $temp_row->extension_id          = (int)$language->extension_id;
+        $temp_row->extension_instance_id = (int)$language->id;
+        $temp_row->title                 = $language->subtitle;
+        $temp_row->tag                   = $language->title;
+        $temp_parameters                 = json_decode($language->parameters);
+
+        if (count($temp_parameters) > 0
+            && (int)$this->application_id > 0
+        ) {
+            foreach ($temp_parameters as $key => $value) {
+                if ($key == (int)$this->application_id) {
+                    $data_parameters = $value;
+                    break;
+                }
+            }
+        }
+
+        foreach ($registry_parameters as $parameters) {
+
+            $key = $parameters['name'];
+
+            if (isset($parameters['default'])) {
+                $default = $parameters['default'];
+            } else {
+                $default = false;
+            }
+
+            if (isset($data_parameters->$key)) {
+                $value = $data_parameters->$key;
+            } else {
+                $value = null;
+            }
+
+            if ($value === null) {
+                $value = $default;
+            }
+
+            $temp_row->$key = $value;
+        }
+
+        $temp_row->language_utc_offset = null;
+
+        $this->installed_languages[$temp_row->tag] = $temp_row;
+        $this->tag_array[]                         = $temp_row->tag;
+    }
+
+    /**
+     * Retrieve a list of application_ids for this database
      *
      * @return  $this
      * @since   1.0.0
@@ -556,4 +566,5 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         return $this;
     }
+
 }
