@@ -48,7 +48,6 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      *
      * @covers  Molajo\Language\Adapter\Database::get
      * @covers  Molajo\Language\Adapter\Database::translateString
-     * @covers  Molajo\Language\Adapter\Database::search
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @covers  Molajo\Language\Adapter\DatabaseModel::get
@@ -79,7 +78,6 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      *
      * @covers  Molajo\Language\Adapter\Database::get
      * @covers  Molajo\Language\Adapter\Database::translateString
-     * @covers  Molajo\Language\Adapter\Database::search
      * @covers  Molajo\Language\Adapter\Database::setString
      *
      * @covers  Molajo\Language\Adapter\DatabaseModel::get
