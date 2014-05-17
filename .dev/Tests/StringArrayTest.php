@@ -54,9 +54,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
         $default_language = null;
         $en_gb_instance = null;
 
-        $this->adapter = new StringArray($language,
-            $title,
-            $tag,
+        $this->adapter = new StringArray($language, $title, $tag,
             $locale,
             $rtl,
             $direction,

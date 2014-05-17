@@ -30,12 +30,10 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     /**
      * Setup
      *
-     * @covers  Molajo\Language\Driver::get
-     * @covers  Molajo\Language\Driver::translateString
+     * @covers  Molajo\Language\Driver::__construct
      */
     protected function setUp()
     {
-        /** Mock Adapter */
         $adapter = new MockAdapter();
 
         $this->driver = new Driver($adapter, 'en-GB');

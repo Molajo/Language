@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1400350036">
-  <project timestamp="1400350036">
+<coverage generated="1400350715">
+  <project timestamp="1400350715">
     <file name="/Users/amystephen/Sites/Molajo/Language/.dev/Bootstrap.php">
       <line num="24" type="stmt" count="0"/>
       <line num="25" type="stmt" count="0"/>
@@ -123,18 +123,18 @@
     <package name="Molajo\Language">
       <file name="/Users/amystephen/Sites/Molajo/Language/Source/Driver.php">
         <class name="Driver" namespace="Molajo\Language" fullPackage="Molajo" package="Molajo">
-          <metrics methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="2" elements="8" coveredelements="4"/>
+          <metrics methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
         </class>
-        <line num="47" type="method" name="__construct" crap="2" count="0"/>
-        <line num="51" type="stmt" count="0"/>
-        <line num="52" type="stmt" count="0"/>
-        <line num="53" type="stmt" count="0"/>
+        <line num="47" type="method" name="__construct" crap="1" count="2"/>
+        <line num="51" type="stmt" count="2"/>
+        <line num="52" type="stmt" count="2"/>
+        <line num="53" type="stmt" count="2"/>
         <line num="65" type="method" name="get" crap="1" count="1"/>
         <line num="67" type="stmt" count="1"/>
         <line num="83" type="method" name="translateString" crap="1" count="1"/>
         <line num="85" type="stmt" count="1"/>
         <line num="88" type="stmt" count="0"/>
-        <metrics loc="87" ncloc="30" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="2" elements="8" coveredelements="4"/>
+        <metrics loc="87" ncloc="30" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
       </file>
     </package>
     <file name="/Users/amystephen/Sites/Molajo/Language/vendor/commonapi/exception/ExceptionInterface.php">
@@ -353,6 +353,6 @@
       <line num="53" type="stmt" count="0"/>
       <metrics loc="53" ncloc="51" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="27" coveredstatements="0" elements="29" coveredelements="0"/>
     </file>
-    <metrics files="9" loc="1101" ncloc="610" classes="6" methods="33" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="259" coveredstatements="61" elements="292" coveredelements="72"/>
+    <metrics files="9" loc="1101" ncloc="610" classes="6" methods="33" coveredmethods="12" conditionals="0" coveredconditionals="0" statements="259" coveredstatements="64" elements="292" coveredelements="76"/>
   </project>
 </coverage>
