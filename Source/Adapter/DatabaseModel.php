@@ -116,7 +116,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
     /**
      * List of Properties
      *
-     * @var    object
+     * @var    array
      * @since  1.0.0
      */
     protected $property_array = array(

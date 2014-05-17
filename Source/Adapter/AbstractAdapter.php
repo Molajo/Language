@@ -21,8 +21,8 @@ use CommonApi\Language\TranslateInterface;
  * @since      1.0.0
  */
 abstract class AbstractAdapter implements CaptureUntranslatedStringInterface,
-                                          LanguageInterface,
-                                          TranslateInterface
+ LanguageInterface,
+ TranslateInterface
 {
     /**
      * Get Language Properties

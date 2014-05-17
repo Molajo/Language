@@ -23,8 +23,8 @@ use stdClass;
  * @since      1.0.0
  */
 class Database extends AbstractAdapter implements LanguageInterface,
-                                                  TranslateInterface,
-                                                  CaptureUntranslatedStringInterface
+ TranslateInterface,
+ CaptureUntranslatedStringInterface
 {
     /**
      * Language
@@ -144,22 +144,23 @@ class Database extends AbstractAdapter implements LanguageInterface,
      * @var    array
      * @since  1.0.0
      */
-    protected $property_array = array(
-        'language',
-        'extension_id',
-        'extension_instance_id',
-        'title',
-        'tag',
-        'locale',
-        'rtl',
-        'direction',
-        'first_day',
-        'language_utc_offset',
-        'language_strings',
-        'model',
-        'default_language',
-        'en_gb_instance'
-    );
+    protected $property_array
+        = array(
+            'language',
+            'extension_id',
+            'extension_instance_id',
+            'title',
+            'tag',
+            'locale',
+            'rtl',
+            'direction',
+            'first_day',
+            'language_utc_offset',
+            'language_strings',
+            'model',
+            'default_language',
+            'en_gb_instance'
+        );
 
     /**
      * Constructor
@@ -260,49 +261,43 @@ class Database extends AbstractAdapter implements LanguageInterface,
     /**
      * Translate String
      *
-     * @param   string|array $string
+     * @param   string $string
      *
      * @return  string
      * @since   1.0
      */
     public function translateString($string)
     {
-        if (is_array($string)) {
+        $key = strtolower($string);
 
-            $found = array();
-
-            foreach ($string as $item) {
-                $found[$item] = $this->search($string);
-            }
-
-            return $found;
+        if (isset($this->language_strings[ $key ])) {
+            return $this->language_strings[ $key ];
         }
 
-        return $this->search($string);
+        $results = $this->translateDefaultLanguage($key);
+
+        if ($results === $key) {
+            $results = $this->translateEngbInstance($key);
+        }
+
+        if ($results === $key) {
+            $results = $this->setString($key);
+        }
+
+        return $results;
     }
 
     /**
-     * Search sequence for translation:
+     * Check default language
      *
-     *  - Current language
-     *  - Default language
-     *  - Final fallback en-GB
-     *  - Store as untranslated string - send back, as is
-     *
-     * @param   string  $string
+     * @param   string $key
      *
      * @return  string
      * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function search($string)
+    protected function translateDefaultLanguage($key)
     {
-        $key = strtolower($string);
-
-        if (isset($this->language_strings[$key])) {
-            return $this->language_strings[$key];
-        }
-
         if (is_object($this->default_language)) {
             $result = $this->default_language->translate($key);
             if ($result == $key) {
@@ -311,6 +306,20 @@ class Database extends AbstractAdapter implements LanguageInterface,
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Check en-GB instance
+     *
+     * @param   string $key
+     *
+     * @return  string
+     * @since   1.0.0
+     * @throws  \CommonApi\Exception\RuntimeException
+     */
+    protected function translateEngbInstance($key)
+    {
         if (is_object($this->en_gb_instance)) {
             $result = $this->en_gb_instance->translate($key);
             if ($result == $key) {
@@ -319,9 +328,7 @@ class Database extends AbstractAdapter implements LanguageInterface,
             }
         }
 
-        $this->setString($key);
-
-        return $string;
+        return $key;
     }
 
     /**
@@ -329,13 +336,13 @@ class Database extends AbstractAdapter implements LanguageInterface,
      *
      * @param   string $string
      *
-     * @return  bool
+     * @return  string
      * @since   1.0
      */
     public function setString($string)
     {
         $this->model->setString($string);
 
-        return $this;
+        return $string;
     }
 }
