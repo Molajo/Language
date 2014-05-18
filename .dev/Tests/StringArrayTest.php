@@ -35,7 +35,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
             'title'               => 'English',
             'tag'                 => 'en-GB',
             'locale'              => 'en-GB',
-            'rtl'                 => 'false',
+            'rtl'                 => false,
             'direction'           => 'ltr',
             'first_day'           => 0,
             'language_utc_offset' => 0,
@@ -63,7 +63,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
             'title'               => 'English DF',
             'tag'                 => 'en-DF',
             'locale'              => 'en-DF',
-            'rtl'                 => 'true',
+            'rtl'                 => true,
             'direction'           => 'rtl',
             'first_day'           => 0,
             'language_utc_offset' => 0,
@@ -88,7 +88,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
             'title'               => 'English DF',
             'tag'                 => 'en-DF',
             'locale'              => 'en-DF',
-            'rtl'                 => 'true',
+            'rtl'                 => true,
             'direction'           => 'rtl',
             'first_day'           => 0,
             'language_utc_offset' => 0,
@@ -112,7 +112,6 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $model            = new MockModel();
-        $primary_language = true;
         $default_language = null;
         $en_gb_instance   = null;
 
@@ -120,7 +119,6 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
             $this->primary_language_array,
             $this->primary_language_strings,
             $model,
-            $primary_language,
             $default_language,
             $en_gb_instance
         );
@@ -156,7 +154,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($results->title, 'English');
         $this->assertEquals($results->tag, 'en-GB');
         $this->assertEquals($results->locale, 'en-GB');
-        $this->assertEquals($results->rtl, 'false');
+        $this->assertEquals($results->rtl, false);
         $this->assertEquals($results->direction, 'ltr');
         $this->assertEquals($results->first_day, 0);
         $this->assertEquals($results->language_utc_offset, 0);
@@ -234,13 +232,13 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
         $default_instance = new StringArray(
             $this->default_language_array,
             $this->default_language_strings,
-            $model, false, null, null
+            $model, null, null
         );
 
         $current_instance = new StringArray(
             $this->primary_language_array,
             $this->primary_language_strings,
-            $model, true, $default_instance, null
+            $model, $default_instance, null
         );
 
         $results = $current_instance->translateString('xyz');
@@ -267,13 +265,13 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
         $default_instance = new StringArray(
             $this->default_language_array,
             $this->default_language_strings,
-            $model, false, null, null
+            $model, null, null
         );
 
         $current_instance = new StringArray(
             $this->primary_language_array,
             $this->primary_language_strings,
-            $model, true, $default_instance, null
+            $model, $default_instance, null
         );
 
         $results = $current_instance->translateString('Not found');
@@ -300,19 +298,19 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
         $base_instance = new StringArray(
             $this->en_gb_array,
             $this->en_gb_strings,
-            $model, false, null, null
+            $model, null, null
         );
 
         $default_instance = new StringArray(
             $this->default_language_array,
             $this->default_language_strings,
-            $model, false, null, null
+            $model, null, null
         );
 
         $current_instance = new StringArray(
             $this->primary_language_array,
             $this->primary_language_strings,
-            $model, true, $default_instance, $base_instance
+            $model, $default_instance, $base_instance
         );
 
         $results = $current_instance->translateString('3');
@@ -339,19 +337,19 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
         $base_instance = new StringArray(
             $this->en_gb_array,
             $this->en_gb_strings,
-            $model, false, null, null
+            $model, null, null
         );
 
         $default_instance = new StringArray(
             $this->default_language_array,
             $this->default_language_strings,
-            $model, false, null, null
+            $model, null, null
         );
 
         $current_instance = new StringArray(
             $this->primary_language_array,
             $this->primary_language_strings,
-            $model, true, $default_instance, $base_instance
+            $model, $default_instance, $base_instance
         );
 
         $results = $current_instance->translateString('Not found');
