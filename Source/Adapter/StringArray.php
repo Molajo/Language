@@ -161,7 +161,6 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      * @param  array                              $options
      * @param  array                              $language_strings
      * @param  CaptureUntranslatedStringInterface $model
-     * @param  boolean                            $primary_language
      * @param  LanguageInterface                  $default_language
      * @param  LanguageInterface                  $en_gb_instance
      *
@@ -171,14 +170,12 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
         array $options,
         array $language_strings,
         CaptureUntranslatedStringInterface $model,
-        $primary_language = true,
         LanguageInterface $default_language = null,
         LanguageInterface $en_gb_instance = null
     ) {
-        $this->model            = $model;
-        $this->language_strings = $language_strings;
         $this->setLanguageMetadata($options);
-        $this->primary_language = $primary_language;
+        $this->language_strings = $language_strings;
+        $this->model            = $model;
         $this->default_language = $default_language;
         $this->en_gb_instance   = $en_gb_instance;
     }

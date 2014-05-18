@@ -1,12 +1,12 @@
 <?php
 /**
- * Database Model
+ * Database
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright  2014 Amy Stephen. All rights reserved.
  */
-namespace Molajo\Language\Adapter;
+namespace Molajo\Language\Capture;
 
 use stdClass;
 use Exception;
@@ -23,7 +23,7 @@ use CommonApi\Query\QueryInterface;
  * @copyright  2014 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
-class DatabaseModel implements CaptureUntranslatedStringInterface
+class Database implements CaptureUntranslatedStringInterface
 {
     /**
      * Application ID
@@ -163,67 +163,9 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
         $this->model_registry       = $model_registry;
         $this->public_view_group_id = (int)$public_view_group_id;
         $this->primary_category_id  = (int)$primary_category_id;
+        $this->installed_languages  = $installed_languages;
 
         $this->getApplications();
-    }
-
-    /**
-     * Get Primary Language Language Strings
-     *
-     * @param   string $language
-     *
-     * @return  array
-     * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
-     */
-    public function getInstalledLanguages()
-    {
-        return $this->getInstalledLanguages2();
-    }
-
-    /**
-     * Get Primary Language Language Strings
-     *
-     * @param   string $language
-     *
-     * @return  array
-     * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
-     */
-    public function getLanguageStrings($language = 'en-GB')
-    {
-        try {
-            $this->query->clearQuery();
-
-            $this->query->select('title');
-            $this->query->select('content_text');
-            $this->query->from('#__language_strings');
-            $this->query->where('column', 'catalog_type_id', '=', 'integer', (int)6250);
-            $this->query->where('column', 'extension_instance_id', '=', 'integer', (int)6250);
-            $this->query->where('column', 'language', '=', 'string', $language);
-            $this->query->orderBy('title', 'ASC');
-
-            $data = $this->database->loadObjectList($this->query->getSQL());
-
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'DatabaseModel getLanguageStrings Query Failed: ' . $e->getMessage()
-            );
-        }
-
-        if (count($data) === 0) {
-            throw new RuntimeException(
-                'Language DatabaseModel getLanguageStrings: No Language strings for Language.'
-            );
-        }
-
-        $strings = array();
-        foreach ($data as $item) {
-            $title           = strtolower($item->title);
-            $strings[$title] = $item->content_text;
-        }
-
-        return $strings;
     }
 
     /**
@@ -278,7 +220,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         } catch (Exception $e) {
             throw new RuntimeException(
-                'DatabaseModel exists query failed for Language/String: '
+                'Database exists query failed for Language/String: '
                 . $language . '/' . $string . $e->getMessage()
             );
         }
@@ -351,7 +293,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         } catch (Exception $e) {
             throw new RuntimeException(
-                'DatabaseModel saveLanguageString exists query failed for Language/String: '
+                'Database saveLanguageString exists query failed for Language/String: '
                 . $language . '/' . $language_string . $e->getMessage()
             );
         }
@@ -401,14 +343,14 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         } catch (Exception $e) {
             throw new RuntimeException(
-                'DatabaseModel insertCatalogEntry query failed for Language/String: '
+                'Database insertCatalogEntry query failed for Language/String: '
                 . $language_id . '/' . $sef_request . $e->getMessage()
             );
         }
     }
 
     /**
-     * Determine if the language string exists for the language
+     * Retrieve the slug after saving
      *
      * @param   int $language_id
      *
@@ -429,112 +371,10 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         } catch (Exception $e) {
             throw new RuntimeException(
-                'DatabaseModel getSEFRequest Query Failed Language string Primary Key: '
+                'Database getSEFRequest Query Failed Language string Primary Key: '
                 . $language_id . $e->getMessage()
             );
         }
-    }
-
-    /**
-     * Retrieve installed languages for this application
-     *
-     * @return  $this
-     * @since   1.0.0
-     * @throws  \CommonApi\Exception\RuntimeException
-     */
-    protected function getInstalledLanguages2()
-    {
-        $registry_parameters = $this->model_registry['parameters'];
-
-        $data = $this->getLanguageExtensionInstances();
-
-        foreach ($data as $language) {
-            $this->processInstalledLanguageRow($data, $registry_parameters);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get Extension Instances for Language
-     *
-     * @return  object
-     * @since   1.0
-     */
-    protected function getLanguageExtensionInstances()
-    {
-        try {
-            $this->query->clearQuery();
-
-            $this->query->select('*');
-            $this->query->from('#__extension_instances');
-            $this->query->where('column', 'catalog_type_id', '=', 'integer', (int)6000);
-            $this->query->where('column', 'catalog_type_id', '<>', 'column', 'extension_id');
-
-            $data = $this->database->loadObjectList($this->query->getSQL());
-
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
-            );
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param $language
-     * @param $registry_parameters
-     */
-    protected function processInstalledLanguageRow($language, $registry_parameters)
-    {
-        $data_parameters     = new stdClass();
-
-        $temp_row                        = new stdClass();
-        $temp_row->extension_id          = (int)$language->extension_id;
-        $temp_row->extension_instance_id = (int)$language->id;
-        $temp_row->title                 = $language->subtitle;
-        $temp_row->tag                   = $language->title;
-        $temp_parameters                 = json_decode($language->parameters);
-
-        if (count($temp_parameters) > 0
-            && (int)$this->application_id > 0
-        ) {
-            foreach ($temp_parameters as $key => $value) {
-                if ($key == (int)$this->application_id) {
-                    $data_parameters = $value;
-                    break;
-                }
-            }
-        }
-
-        foreach ($registry_parameters as $parameters) {
-
-            $key = $parameters['name'];
-
-            if (isset($parameters['default'])) {
-                $default = $parameters['default'];
-            } else {
-                $default = false;
-            }
-
-            if (isset($data_parameters->$key)) {
-                $value = $data_parameters->$key;
-            } else {
-                $value = null;
-            }
-
-            if ($value === null) {
-                $value = $default;
-            }
-
-            $temp_row->$key = $value;
-        }
-
-        $temp_row->language_utc_offset = null;
-
-        $this->installed_languages[$temp_row->tag] = $temp_row;
-        $this->tag_array[]                         = $temp_row->tag;
     }
 
     /**
@@ -556,7 +396,7 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         } catch (Exception $e) {
             throw new RuntimeException(
-                'DatabaseModel getApplications Query Failed ' . $e->getMessage()
+                'Database getApplications Query Failed ' . $e->getMessage()
             );
         }
 
@@ -566,5 +406,4 @@ class DatabaseModel implements CaptureUntranslatedStringInterface
 
         return $this;
     }
-
 }

@@ -13,6 +13,8 @@ use CommonApi\Exception\RuntimeException;
 use CommonApi\IoC\FactoryInterface;
 use CommonApi\IoC\FactoryBatchInterface;
 use Molajo\IoC\FactoryMethodBase;
+use Molajo\Language\Capture\Dummy;
+use stdClass;
 
 /**
  * Language Factory Method
@@ -33,12 +35,28 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
     protected $installed_languages = array();
 
     /**
+     * Application ID
+     *
+     * @var     integer
+     * @since   1.0.0
+     */
+    protected $application_id = null;
+
+    /**
      * Language List
      *
      * @var     array
      * @since   1.0.0
      */
     protected $tag_array = array();
+
+    /**
+     * Installed Languages
+     *
+     * @var     array
+     * @since   1.0.0
+     */
+    protected $installed_language = array();
 
     /**
      * Constructor
@@ -87,12 +105,15 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      */
     public function instantiateClass()
     {
-        $database = $this->instantiateDatabaseModel();
-        $language = $this->setLanguage();
-        $adapter  = $this->instantiateDatabaseAdapter($database, $language);
+        $model                = new Dummy();
+        $this->application_id = $this->dependencies['Runtimedata']->application->id;
+        $this->getInstalledLanguages();
+        $language         = $this->setLanguage();
+        $language_strings = $this->getLanguageStrings($language);
+        $adapter          = $this->instantiateStringArrayAdapter($language, $language_strings);
 
         try {
-            $this->product_result = new $this->product_namespace ($adapter, $language);
+            $this->product_result = new $this->product_namespace($adapter, $language);
 
         } catch (Exception $e) {
 
@@ -107,7 +128,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
     }
 
     /**
-     * Instantiate Database Adapter for Language
+     * Instantiate StringArray Adapter for Language
      *
      * @param   string $model
      * @param   string $language
@@ -116,95 +137,84 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function instantiateDatabaseAdapter($model, $language)
+    protected function instantiateStringArrayAdapter($model, $language)
     {
-        $default_language      = null;
-        $en_gb_instance        = null;
-        $extension_id          = $this->installed_languages['en-GB']->extension_id;
-        $extension_instance_id = $this->installed_languages['en-GB']->extension_instance_id;
-        $title                 = $this->installed_languages['en-GB']->title;
-        $tag                   = $this->installed_languages['en-GB']->tag;
-        $locale                = $this->installed_languages['en-GB']->locale;
-        $rtl                   = $this->installed_languages['en-GB']->rtl;
-        $direction             = $this->installed_languages['en-GB']->rtl;
-        $first_day             = $this->installed_languages['en-GB']->first_day;
-        $language_utc_offset   = $this->installed_languages['en-GB']->language_utc_offset;
+        $options = array();
+
+        $options['language']            = $language;
+        $options['title']               = $this->installed_languages['en-GB']->title;
+        $options['tag']                 = $this->installed_languages['en-GB']->tag;
+        $options['locale']              = $this->installed_languages['en-GB']->locale;
+        $options['rtl']                 = (boolean)$this->installed_languages['en-GB']->rtl;
+        $options['direction']           = $this->installed_languages['en-GB']->rtl;
+        $options['first_day']           = $this->installed_languages['en-GB']->first_day;
+        $options['language_utc_offset'] = $this->installed_languages['en-GB']->language_utc_offset;
+        $options['primary_language']    = true;
+
+        $default_language = null;
+        $en_gb_instance   = null;
 
         try {
-            $class = 'Molajo\\Language\\Adapter\\Database';
+            $class = 'Molajo\\Language\\Adapter\\StringArray';
 
             return new $class(
-                $language,
-                $extension_id,
-                $extension_instance_id,
-                $title,
-                $tag,
-                $locale,
-                $rtl,
-                $direction,
-                $first_day,
-                $language_utc_offset,
+                $options,
                 $model,
+                true,
                 $default_language,
                 $en_gb_instance
             );
         } catch (Exception $e) {
 
-            throw new RuntimeException
-            (
+            throw new RuntimeException(
                 'IoC Factory Method Adapter Instance Failed for ' . $this->product_namespace
                 . ' failed.' . $e->getMessage()
             );
         }
     }
 
+
     /**
-     * Instantiate Language Model for capturing missing translations
+     * Retrieve Language Strings for Current Language
      *
-     * @param   $adapter
-     *
-     * @return  object
-     * @since   1.0.0
+     * @return  array
+     * @since   1.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function instantiateDatabaseModel()
+    protected function getLanguageStrings($language)
     {
-        $public_view_group_id = 1;
-        $database             = $this->dependencies['Database'];
-        $null_date            = $this->dependencies['Query2']->getNullDate();
-        $current_date         = $this->dependencies['Query2']->getDate();
-        $model_registry       = $this->dependencies['Resource']->get(
-            'xml:///Molajo//Model//Datasource//Languages.xml'
-        );
-        $public_view_group_id = 1;
-        $primary_category_id  = 12;
-
-        $class = 'Molajo\\Language\\Adapter\\DatabaseModel';
-
         try {
-            $databasemodel = new $class(
-                $public_view_group_id,
-                $database,
-                $this->dependencies['Query2'],
-                $null_date,
-                $current_date,
-                $model_registry,
-                $public_view_group_id,
-                $primary_category_id
-            );
-        } catch (Exception $e) {
+            $this->dependencies['Query2']->clearQuery();
 
-            throw new RuntimeException
-            (
-                'Language Model instantiateDatabaseModel method Failed for '
-                . $class . ' in LanguageFactoryMethod ' . $e->getMessage()
+            $this->dependencies['Query2']->select('title');
+            $this->dependencies['Query2']->select('content_text');
+            $this->dependencies['Query2']->from('#__language_strings');
+            $this->dependencies['Query2']->where('column', 'catalog_type_id', '=', 'integer', (int)6250);
+            $this->dependencies['Query2']->where('column', 'extension_instance_id', '=', 'integer', (int)6250);
+            $this->dependencies['Query2']->where('column', 'language', '=', 'string', $language);
+            $this->dependencies['Query2']->orderBy('title', 'ASC');
+
+            $data = $this->dependencies['Database']->loadObjectList($this->dependencies['Query2']->getSQL());
+
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                'DatabaseModel getLanguageStrings Query Failed: ' . $e->getMessage()
             );
         }
 
-        $this->installed_languages = $databasemodel->get('installed_languages');
-        $this->tag_array           = $databasemodel->get('tag_array');
+        if (count($data) === 0) {
+            throw new RuntimeException(
+                'Language DatabaseModel getLanguageStrings: No Language strings for Language.'
+            );
+        }
 
-        return $databasemodel;
+        $strings = array();
+        foreach ($data as $item) {
+            $title           = strtolower($item->title);
+            $strings[$title] = $item->content_text;
+        }
+
+        return $strings;
     }
 
     /**
@@ -250,9 +260,89 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
             return $language;
         }
 
-        throw new RuntimeException
-        (
+        throw new RuntimeException(
             'Language Factory Method: No Language Defined.'
         );
+    }
+
+    /**
+     * @param $language
+     * @param $registry_parameters
+     */
+    protected function getInstalledLanguages()
+    {
+        //todo this is NOT done;
+
+        $model_registry = $this->dependencies['Resource']->get(
+            'xml:///Molajo//Model//Datasource//Languages.xml'
+        );
+
+        try {
+            $this->dependencies['Query2']->clearQuery();
+
+            $this->dependencies['Query2']->select('*');
+            $this->dependencies['Query2']->from('#__extension_instances');
+            $this->dependencies['Query2']->where('column', 'catalog_type_id', '=', 'integer', (int)6000);
+            $this->dependencies['Query2']->where('column', 'catalog_type_id', '<>', 'column', 'extension_id');
+
+            $temp = $this->dependencies['Database']->loadObjectList($this->dependencies['Query2']->getSQL());
+
+            $language = $temp[0];
+
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                'DatabaseModel setInstalledLanguages Query Failed: ' . $e->getMessage()
+            );
+        }
+
+        $data_parameters = new stdClass();
+
+        $temp_row                        = new stdClass();
+        $temp_row->extension_id          = (int)$language->extension_id;
+        $temp_row->extension_instance_id = (int)$language->id;
+        $temp_row->title                 = $language->subtitle;
+        $temp_row->tag                   = $language->title;
+        $temp_parameters                 = json_decode($language->parameters);
+
+        if (count($temp_parameters) > 0
+            && (int)$this->application_id > 0
+        ) {
+            foreach ($temp_parameters as $key => $value) {
+                if ($key == (int)$this->application_id) {
+                    $data_parameters = $value;
+                    break;
+                }
+            }
+        }
+
+        foreach ($model_registry->parameters as $parameters) {
+
+            $key = $parameters['name'];
+
+            if (isset($parameters['default'])) {
+                $default = $parameters['default'];
+            } else {
+                $default = false;
+            }
+
+            if (isset($data_parameters->$key)) {
+                $value = $data_parameters->$key;
+            } else {
+                $value = null;
+            }
+
+            if ($value === null) {
+                $value = $default;
+            }
+
+            $temp_row->$key = $value;
+        }
+
+        $temp_row->language_utc_offset = null;
+
+        $this->installed_languages[$temp_row->tag] = $temp_row;
+        $this->tag_array[]                         = $temp_row->tag;
+
+        return $this;
     }
 }
