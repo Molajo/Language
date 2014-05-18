@@ -168,7 +168,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers                   Molajo\Language\Adapter\StringArray::get
      *
-     * @expectedException \CommonApi\Exception\RuntimeException
+     * @expectedException        \CommonApi\Exception\RuntimeException
      * @expectedExceptionMessage Language StringArray Adapter: Attempting to get value for unknown property: not_existing
      *
      * @return  $this
