@@ -12,7 +12,7 @@ use Exception;
 use CommonApi\Exception\RuntimeException;
 use CommonApi\IoC\FactoryInterface;
 use CommonApi\IoC\FactoryBatchInterface;
-use Molajo\IoC\FactoryMethodBase;
+use Molajo\IoC\FactoryMethod\Base as FactoryMethodBase;
 use Molajo\Language\Capture\Dummy;
 use stdClass;
 
@@ -81,7 +81,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    public function setDependencies(array $reflection = null)
+    public function setDependencies(array $reflection = array())
     {
         $this->reflection = array();
 
@@ -90,7 +90,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         $this->dependencies['Runtimedata'] = $options;
         $this->dependencies['Resource']    = $options;
         $this->dependencies['Database']    = $options;
-        $this->dependencies['Query2']      = $options;
+        $this->dependencies['Query']      = $options;
         $this->dependencies['User']        = $options;
 
         return $this->dependencies;
@@ -184,17 +184,17 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
     protected function getLanguageStrings($language)
     {
         try {
-            $this->dependencies['Query2']->clearQuery();
+            $this->dependencies['Query']->clearQuery();
 
-            $this->dependencies['Query2']->select('title');
-            $this->dependencies['Query2']->select('content_text');
-            $this->dependencies['Query2']->from('#__language_strings');
-            $this->dependencies['Query2']->where('column', 'catalog_type_id', '=', 'integer', (int)6250);
-            $this->dependencies['Query2']->where('column', 'extension_instance_id', '=', 'integer', (int)6250);
-            $this->dependencies['Query2']->where('column', 'language', '=', 'string', $language);
-            $this->dependencies['Query2']->orderBy('title', 'ASC');
+            $this->dependencies['Query']->select('title');
+            $this->dependencies['Query']->select('content_text');
+            $this->dependencies['Query']->from('#__language_strings');
+            $this->dependencies['Query']->where('column', 'catalog_type_id', '=', 'integer', (int)6250);
+            $this->dependencies['Query']->where('column', 'extension_instance_id', '=', 'integer', (int)6250);
+            $this->dependencies['Query']->where('column', 'language', '=', 'string', $language);
+            $this->dependencies['Query']->orderBy('title', 'ASC');
 
-            $data = $this->dependencies['Database']->loadObjectList($this->dependencies['Query2']->getSQL());
+            $data = $this->dependencies['Database']->loadObjectList($this->dependencies['Query']->getSQL());
 
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -232,7 +232,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
             return $language;
         }
 
-        $language = $this->dependencies['User']->getUserData()->language;
+        $language = $this->dependencies['User']->getUserdata()->language;
 
         if (in_array($language, $this->tag_array)) {
             return $language;
@@ -278,14 +278,14 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         );
 
         try {
-            $this->dependencies['Query2']->clearQuery();
+            $this->dependencies['Query']->clearQuery();
 
-            $this->dependencies['Query2']->select('*');
-            $this->dependencies['Query2']->from('#__extension_instances');
-            $this->dependencies['Query2']->where('column', 'catalog_type_id', '=', 'integer', (int)6000);
-            $this->dependencies['Query2']->where('column', 'catalog_type_id', '<>', 'column', 'extension_id');
+            $this->dependencies['Query']->select('*');
+            $this->dependencies['Query']->from('#__extension_instances');
+            $this->dependencies['Query']->where('column', 'catalog_type_id', '=', 'integer', (int)6000);
+            $this->dependencies['Query']->where('column', 'catalog_type_id', '<>', 'column', 'extension_id');
 
-            $temp = $this->dependencies['Database']->loadObjectList($this->dependencies['Query2']->getSQL());
+            $temp = $this->dependencies['Database']->loadObjectList($this->dependencies['Query']->getSQL());
 
             $language = $temp[0];
 
