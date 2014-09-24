@@ -308,7 +308,7 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
     /**
      * Set Language Metadata
      *
-     * @param   array   $options
+     * @param   array $options
      *
      * @return  $this
      * @since   1.0

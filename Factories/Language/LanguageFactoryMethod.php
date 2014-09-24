@@ -90,7 +90,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         $this->dependencies['Runtimedata'] = $options;
         $this->dependencies['Resource']    = $options;
         $this->dependencies['Database']    = $options;
-        $this->dependencies['Query']      = $options;
+        $this->dependencies['Query']       = $options;
         $this->dependencies['User']        = $options;
 
         return $this->dependencies;
@@ -110,7 +110,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
         $this->getInstalledLanguages();
         $language         = $this->setLanguage();
         $language_strings = $this->getLanguageStrings($language);
-        $adapter          = $this->instantiateStringArrayAdapter($language, $language_strings);
+        $adapter          = $this->instantiateStringArrayAdapter($model, $language, $language_strings);
 
         try {
             $this->product_result = new $this->product_namespace($adapter, $language);
@@ -137,7 +137,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
      * @since   1.0.0
      * @throws  \CommonApi\Exception\RuntimeException
      */
-    protected function instantiateStringArrayAdapter($model, $language)
+    protected function instantiateStringArrayAdapter($model, $language, $language_strings)
     {
         $options = array();
 
@@ -159,8 +159,8 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
 
             return new $class(
                 $options,
+                $language_strings,
                 $model,
-                true,
                 $default_language,
                 $en_gb_instance
             );
@@ -273,9 +273,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
     {
         //todo this is NOT done;
 
-        $model_registry = $this->dependencies['Resource']->get(
-            'xml:///Molajo//Model//Datasource//Languages.xml'
-        );
+        $model_registry = $this->dependencies['Resource']->get('xml:///Molajo//Model//Datasource//Languages.xml');
 
         try {
             $this->dependencies['Query']->clearQuery();
@@ -315,7 +313,7 @@ class LanguageFactoryMethod extends FactoryMethodBase implements FactoryInterfac
             }
         }
 
-        foreach ($model_registry->parameters as $parameters) {
+        foreach ($model_registry['parameters'] as $parameters) {
 
             $key = $parameters['name'];
 

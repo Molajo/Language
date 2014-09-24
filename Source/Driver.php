@@ -75,7 +75,7 @@ class Driver implements LanguageInterface, TranslateInterface
      *  - Final fallback en-GB
      *  - Store as untranslated string
      *
-     * @param   string  $string
+     * @param   string $string
      *
      * @return  string
      * @since   1.0.0

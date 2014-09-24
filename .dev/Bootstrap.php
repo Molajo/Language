@@ -13,9 +13,9 @@ if (function_exists('CreateClassMap')) {
 }
 include_once $base . '/vendor/autoload.php';
 
-$classmap = array();
-$results  = createClassMap($base . '/Source/Adapter/', 'Molajo\\Language\\Adapter\\');
-$classmap = array_merge($classmap, $results);
+$classmap                             = array();
+$results                              = createClassMap($base . '/Source/Adapter/', 'Molajo\\Language\\Adapter\\');
+$classmap                             = array_merge($classmap, $results);
 $classmap['Molajo\\Language\\Driver'] = $base . '/Source/Driver.php';
 ksort($classmap);
 

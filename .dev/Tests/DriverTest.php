@@ -48,7 +48,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testGet()
     {
-        $results  = $this->driver->get('key');
+        $results = $this->driver->get('key');
 
         $this->assertEquals($results, null);
 
@@ -64,7 +64,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testTranslateString()
     {
-        $results  = $this->driver->translateString('This');
+        $results = $this->driver->translateString('This');
 
         $this->assertEquals($results, 'translatedThis');
 
