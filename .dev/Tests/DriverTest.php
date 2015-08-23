@@ -4,7 +4,7 @@
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  */
 namespace Molajo\Test;
 
@@ -17,7 +17,7 @@ use Molajo\Language\Driver;
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
 class DriverTest extends \PHPUnit_Framework_TestCase
@@ -44,7 +44,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Driver::translateString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testGet()
     {
@@ -60,7 +60,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Driver::translateString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateString()
     {
@@ -77,7 +77,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
 class MockAdapter implements LanguageInterface, TranslateInterface

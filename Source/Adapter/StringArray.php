@@ -4,7 +4,7 @@
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  */
 namespace Molajo\Language\Adapter;
 
@@ -19,7 +19,7 @@ use stdClass;
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
 class StringArray extends AbstractAdapter implements LanguageInterface, TranslateInterface
@@ -97,44 +97,12 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
     protected $language_strings = array();
 
     /**
-     * Model Instance - save untranslated strings
-     *
-     * @var    object  CommonApi\Language\CaptureUntranslatedStringInterface
-     * @since  1.0.0
-     */
-    protected $model;
-
-    /**
-     * Default Language Instance
-     *
-     * @var    null|object  CommonApi\Language\LanguageInterface
-     * @since  1.0.0
-     */
-    protected $default_language;
-
-    /**
-     * Final Fallback en-GB Language Instance
-     *
-     * @var    null|object  CommonApi\Language\LanguageInterface
-     * @since  1.0.0
-     */
-    protected $en_gb_instance;
-
-    /**
      * Primary Language
      *
      * @var    boolean
      * @since  1.0.0
      */
     protected $primary_language = true;
-
-    /**
-     * Backup language instances
-     *
-     * @var    array
-     * @since  1.0.0
-     */
-    protected $language_instances = array('default_language', 'en_gb_instance');
 
     /**
      * List of Properties
@@ -156,11 +124,27 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
         );
 
     /**
+     * Backup language instances
+     *
+     * @var    array
+     * @since  1.0.0
+     */
+    protected $language_instances = array();
+
+    /**
+     * Untranslated Instance
+     *
+     * @var    object  CommonApi\Language\CaptureUntranslatedStringInterface
+     * @since  1.0.0
+     */
+    protected $untranslated;
+
+    /**
      * Constructor
      *
      * @param  array                              $options
      * @param  array                              $language_strings
-     * @param  CaptureUntranslatedStringInterface $model
+     * @param  CaptureUntranslatedStringInterface $untranslated
      * @param  LanguageInterface                  $default_language
      * @param  LanguageInterface                  $en_gb_instance
      *
@@ -169,15 +153,14 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
     public function __construct(
         array $options,
         array $language_strings,
-        CaptureUntranslatedStringInterface $model,
+        CaptureUntranslatedStringInterface $untranslated,
         LanguageInterface $default_language = null,
         LanguageInterface $en_gb_instance = null
     ) {
         $this->setLanguageMetadata($options);
         $this->language_strings = $language_strings;
-        $this->model            = $model;
-        $this->default_language = $default_language;
-        $this->en_gb_instance   = $en_gb_instance;
+        $this->untranslated     = $untranslated;
+        $this->setBackupInstances($default_language, $en_gb_instance);
     }
 
     /**
@@ -187,8 +170,9 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      *
      * @param   null|string $key
      *
-     * @return  int  $this
-     * @since   1.0
+     * @return  mixed
+     * @since   1.0.0
+     * @throws  \CommonApi\Exception\RuntimeException
      */
     public function get($key = null)
     {
@@ -214,10 +198,14 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      * @param   string $string
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      */
     public function translateString($string)
     {
+        if (trim($string) === '') {
+            return $string;
+        }
+
         $key = strtolower($string);
 
         if (isset($this->language_strings[$key])) {
@@ -261,9 +249,13 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      */
     protected function searchBackupLanguages($key)
     {
-        foreach ($this->language_instances as $language) {
+        if (count($this->language_instances) === 0) {
+            return $key;
+        }
 
-            $result = $this->searchBackupLanguage($key, $language);
+        foreach ($this->language_instances as $key => $language_instance) {
+
+            $result = $language_instance->translateString($key);
 
             if ($result === $key) {
             } else {
@@ -275,34 +267,16 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
     }
 
     /**
-     * Search another language for string, for primary language only
-     *
-     * @param   string $key
-     * @param   string $language
-     *
-     * @return  string
-     * @since   1.0.0
-     */
-    protected function searchBackupLanguage($key, $language)
-    {
-        if (is_object($this->$language)) {
-            return $this->$language->translateString($key);
-        }
-
-        return $key;
-    }
-
-    /**
      * Save untranslated strings for localization, for primary language only
      *
      * @param   string $string
      *
      * @return  string
-     * @since   1.0
+     * @since   1.0.0
      */
     protected function setString($string)
     {
-        return $this->model->setString($string);
+        return $this->untranslated->setString($string);
     }
 
     /**
@@ -311,19 +285,39 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      * @param   array $options
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     protected function setLanguageMetadata(array $options = array())
     {
-        $this->language            = $options['language'];
-        $this->title               = $options['title'];
-        $this->tag                 = $options['tag'];
-        $this->locale              = $options['locale'];
-        $this->rtl                 = $options['rtl'];
-        $this->direction           = $options['direction'];
-        $this->first_day           = $options['first_day'];
-        $this->language_utc_offset = $options['language_utc_offset'];
-        $this->primary_language    = $options['primary_language'];
+        foreach ($this->property_array as $key) {
+            if (isset($options[$key])) {
+                $this->$key = $options[$key];
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Load Backup language instances
+     *
+     * @param  LanguageInterface $default_language
+     * @param  LanguageInterface $en_gb_instance
+     *
+     * @return  $this
+     * @since   1.0.0
+     */
+    protected function setBackupInstances($default_language = null, $en_gb_instance = null)
+    {
+        if ($default_language === null) {
+        } else {
+            $this->language_instances['default'] = $default_language;
+        }
+
+        if ($en_gb_instance === null) {
+        } else {
+            $this->language_instances['en-GB'] = $en_gb_instance;
+        }
 
         return $this;
     }
@@ -332,7 +326,7 @@ class StringArray extends AbstractAdapter implements LanguageInterface, Translat
      * Get All Language Properties
      *
      * @return  stdClass
-     * @since   1.0
+     * @since   1.0.0
      */
     protected function getAll()
     {

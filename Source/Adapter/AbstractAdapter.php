@@ -4,7 +4,7 @@
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  */
 namespace Molajo\Language\Adapter;
 
@@ -16,7 +16,7 @@ use CommonApi\Language\TranslateInterface;
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
 abstract class AbstractAdapter implements LanguageInterface, TranslateInterface
@@ -29,7 +29,7 @@ abstract class AbstractAdapter implements LanguageInterface, TranslateInterface
      * @param   null|string $key
      *
      * @return  int  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     abstract public function get($key = null);
 

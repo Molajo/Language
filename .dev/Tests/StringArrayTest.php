@@ -4,7 +4,7 @@
  *
  * @package    Molajo
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  */
 namespace Molajo\Test;
 
@@ -16,7 +16,7 @@ use Molajo\Language\Adapter\StringArray;
  *
  * @author     Amy Stephen
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright  2014 Amy Stephen. All rights reserved.
+ * @copyright  2014-2015 Amy Stephen. All rights reserved.
  * @since      1.0.0
  */
 class StringArrayTest extends \PHPUnit_Framework_TestCase
@@ -128,7 +128,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::get
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testGet()
     {
@@ -144,7 +144,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::getAll
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testGetAll()
     {
@@ -185,7 +185,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::translateString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateStringFound()
     {
@@ -204,7 +204,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::setString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateStringNotFound()
     {
@@ -223,7 +223,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::setString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateStringBackupLanguageFound()
     {
@@ -256,7 +256,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::setString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateStringBackupLanguageNotFound()
     {
@@ -289,7 +289,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::setString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateStringBaseLanguageFound()
     {
@@ -328,7 +328,7 @@ class StringArrayTest extends \PHPUnit_Framework_TestCase
      * @covers  Molajo\Language\Adapter\StringArray::setString
      *
      * @return  $this
-     * @since   1.0
+     * @since   1.0.0
      */
     public function testTranslateStringBaseLanguageNotFound()
     {

@@ -3,7 +3,11 @@
     "type": "molajo-package",
     "description": "Molajo Language Services for PHP Applications",
     "version": "1.0.0",
-    "keywords": ["Language", "CommonApi", "Molajo"],
+    "keywords": [
+        "Language",
+        "CommonApi",
+        "Molajo"
+    ],
     "homepage": "http://github.com/Molajo/Language",
     "license": "MIT",
     "authors": [
